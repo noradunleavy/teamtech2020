@@ -9,7 +9,14 @@ import FormControl from 'react-bootstrap/FormControl'
 import { Switch, Route, Router, BrowserRouter, Redirect, UseHistory } from 'react-router-dom';
 import Settings from './settings.js';
 
-
+export const DataVisualization = (props) => (
+    <header className="App-header">
+        <p>
+            Welcome to our data visualization!
+        </p>
+    </header>
+);
+/*
 var Link = require('react-router-dom').Link
 
 function routeToSettings() {
@@ -47,11 +54,11 @@ export default class DataVisualization extends React.Component {
             <Nav.Link href="visualization">Data Visualization</Nav.Link>
             <Nav.Link href='./settings' onClick={routeToSettings()}>Settings</Nav.Link>
           </Nav>
-        <Form inline>
-      <FormControl type="text" placeholder="Location" className="mr-sm-2" />
-      <Button variant="outline-info">Search</Button>
-    </Form>
-  </Navbar>
+            <Form inline>
+                <FormControl type="text" placeholder="Location" className="mr-sm-2" />
+                <Button variant="outline-info">Search</Button>
+            </Form>
+        </Navbar>
 
       <header className="App-header">
         <p>
@@ -61,4 +68,7 @@ export default class DataVisualization extends React.Component {
     </div>
   );
 }
-}
+} */
+
+
+

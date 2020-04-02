@@ -1,25 +1,23 @@
 import React from 'react';
-import { Link, Switch, Route, BrowserRouter } from 'react-router-dom';
+import { Link, Switch, Route, BrowserRouter as Router } from 'react-router-dom';
 import Nav from 'react-bootstrap/Nav'
-import DataVisualization from './components/datavis.js';
-import Settings from './components/settings.js';
+import {DataVisualization} from './components/datavis.js';
+import {Settings} from './components/settings.js';
+import {NavigationBar} from './components/NavigationBar.js'
 
 
   export default class App extends React.Component {
     render() {
       return (
-        <div className="App">
-          <BrowserRouter>
-            <div>
-              <Nav>
+          <React.Fragment>
+            <Router>
+              <NavigationBar />
               <Switch>
-                <Route component={DataVisualization} pattern='./components/datavis.js' />
-                <Route component={Settings} pattern='./components/settings.js' />
+                <Route exact path="/" component={DataVisualization} />
+                <Route path="/settings" component={Settings} />
               </Switch>
-              </Nav>
-            </div>
-          </BrowserRouter>
-        </div>
+            </Router>
+          </React.Fragment>
       );
     }
   }
