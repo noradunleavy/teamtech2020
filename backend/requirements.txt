@@ -1,3 +1,0 @@
-
-pymongo     # 3.10.1
-dnspython   # 1.16.0; Needed to connect to cloud mongo server
