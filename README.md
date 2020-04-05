@@ -66,3 +66,5 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+For our project, in collaboration with Cisco Systems, we will aim to visualize one's cellphone behavior and craft a machine learning model that detects abnormal behavior.
+
