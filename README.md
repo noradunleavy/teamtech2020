@@ -136,4 +136,3 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
->>>>>>> parent of a09c1f1f... Merge pull request #5 from noradunleavy/backend-frontend-folders
