@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Helmet } from "react-helmet";
-import './Components.css';
+//import './Components.css';
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import Button from 'react-bootstrap/Button'
@@ -9,27 +9,20 @@ import FormControl from 'react-bootstrap/FormControl'
 import { Switch, Route, Router, BrowserRouter, Redirect, UseHistory } from 'react-router-dom';
 import Settings from './settings.js';
 import { render } from '@testing-library/react';
-import Sunburst from 'react-sunburst-d3-v4';
+import Sunburst from 'react-zoomable-sunburst-d3-v4';
 import data from './data';
+import './datavis.css';
 
-export const DataVisualization = (props) => (
-
-    <header className="App-header">
-        <p>
-            Welcome to our data visualization!
-        </p>
-    </header>
-);
-
-//export const DataVisualizationTwo = (props) => (
  
-    export default class App extends Component {
+    class DataVisualization extends Component 
+    {
         onSelect(event){
           console.log(event);
         }
+        
         render() {
           return (
-            <div className="App">
+            <div> 
               <Sunburst
                 data={data}
                 onSelect={this.onSelect}
@@ -44,5 +37,5 @@ export const DataVisualization = (props) => (
             </div>
           );
         }
-      }
-      
+    }
+export default DataVisualization;
