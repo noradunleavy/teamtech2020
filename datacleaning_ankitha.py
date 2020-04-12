@@ -100,7 +100,7 @@ ret = remove_unnecessary(ret)
 # pprint(ret)
 
 ##resets the single ret
-ret = reset_ret(ret)
+# ret = reset_ret(ret)
 # print("reset ret")
 # pprint(ret)
 
@@ -118,7 +118,6 @@ def json_to_dataframe(ret):
                       "processName": app["processName"], 
                       "priority": app["priority"], 
                       "timestamp": ret["timestamp"], 
-                      "timeZone": ret["timeZone"],  # having trouble with getting to the tz part
                       "batteryLevel": ret["batteryLevel"], 
                       "batteryStatus": ret["batteryStatus"]
                       })
