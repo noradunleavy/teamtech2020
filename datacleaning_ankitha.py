@@ -2,8 +2,9 @@ from pprint import pprint
 
 import pymongo
 import pandas as pd
+import json
 
-print("hi")
+# print("hi")
 
 user = 'read'
 pwd = 'goillini'    # FIXME: replace PASSWORD before running
@@ -70,7 +71,7 @@ def convert_timestamp(ret):
 # Deletes irrelevant columns
 def remove_unnecessary(ret):
     del ret['mobileCountryCode']
-    del ret['timeZone']
+    # del ret['timeZone']
     return ret
 
 # Cleans single ret
@@ -95,17 +96,35 @@ ret = organize_apps(ret)
 ret = classify_battery(ret)
 ret = convert_timestamp(ret)
 ret = remove_unnecessary(ret)
-print("Organized ret: ")
-pprint(ret)
+# print("Organized ret: ")
+# pprint(ret)
 
 ##resets the single ret
 ret = reset_ret(ret)
-print("reset ret")
+# print("reset ret")
 # pprint(ret)
 
-##getting multple rets and organizing them
-limit = 3
-rets = get_num_rets(limit)
-rets = organize_all_rets(rets)
-# pprint(rets)
+# ##getting multple rets and organizing them
+# limit = 3
+# rets = get_num_rets(limit)
+# rets = organize_all_rets(rets)
+# # pprint(rets)
 
+# converting to dataframe - takes one ret object at a time
+def json_to_dataframe(ret):
+    jsons = []
+    for app in ret["apps"]: # put each item into dict object
+        jsons.append({"uuid": ret["uuid"], 
+                      "processName": app["processName"], 
+                      "priority": app["priority"], 
+                      "timestamp": ret["timestamp"], 
+                      "timeZone": ret["timeZone"],  # having trouble with getting to the tz part
+                      "batteryLevel": ret["batteryLevel"], 
+                      "batteryStatus": ret["batteryStatus"]
+                      })
+
+    dataframe = pd.DataFrame(jsons)
+    return dataframe
+
+df = json_to_dataframe(ret)
+print(df)
