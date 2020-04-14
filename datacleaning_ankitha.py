@@ -1,13 +1,13 @@
+import json
 from pprint import pprint
 
 import pymongo
-import pandas as pd
-import json
 
-# print("hi")
+import pandas as pd
+
 
 user = 'read'
-pwd = 'goillini'    # FIXME: replace PASSWORD before running
+pwd = ''    # FIXME: replace PASSWORD before running
 connectionString = f"mongodb+srv://{user}:{pwd}@cluster0-wn7hw.azure.mongodb.net/test?retryWrites=true&w=majority"
 print(f"Connection String: {connectionString}")
 
@@ -33,7 +33,7 @@ def get_num_rets(limit):
     spec = {"uuid": "eb20b8b2103f98d5f3418dfe461502a0fa3d82429460703569868243d25cc56c"}
     rets = db.usage.find(spec).limit(limit)
     return rets
-    #you would clean each doc in rets 
+    #you would clean each doc in rets
 
 # Converts each app priority to numerical values
 def organize_apps(ret):
@@ -114,11 +114,11 @@ ret = remove_unnecessary(ret)
 def json_to_dataframe(ret):
     jsons = []
     for app in ret["apps"]: # put each item into dict object
-        jsons.append({"uuid": ret["uuid"], 
-                      "processName": app["processName"], 
-                      "priority": app["priority"], 
-                      "timestamp": ret["timestamp"], 
-                      "batteryLevel": ret["batteryLevel"], 
+        jsons.append({"uuid": ret["uuid"],
+                      "processName": app["processName"],
+                      "priority": app["priority"],
+                      "timestamp": ret["timestamp"],
+                      "batteryLevel": ret["batteryLevel"],
                       "batteryStatus": ret["batteryStatus"]
                       })
 
