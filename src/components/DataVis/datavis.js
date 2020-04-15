@@ -1,30 +1,20 @@
 import React, {Component} from 'react';
-import { Helmet } from "react-helmet";
-import Navbar from 'react-bootstrap/Navbar'
-import Nav from 'react-bootstrap/Nav'
-import Button from 'react-bootstrap/Button'
-import Form from 'react-bootstrap/Form'
-import FormControl from 'react-bootstrap/FormControl'
-import { Switch, Route, Router, BrowserRouter, Redirect, UseHistory } from 'react-router-dom';
-import Settings from '../settings.js';
-import { render } from '@testing-library/react';
 import Sunburst from 'react-sunburst-d3-v4';
 import data from './data';
 import './datavis.css';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
-//import 'react-dropdown/style.css';
 
 const options = [
   'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
 ];
 const defaultOption = options[0];
 class DataVisualization extends Component {
+
   onSelect(event){
     console.log(event);
   }
 
-  
   render() {
     return (
       <div>
