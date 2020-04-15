@@ -28,20 +28,20 @@ class DataVisualization extends Component {
   render() {
     return (
       <div>
-        
         <DropdownButton 
         id="dropdown-item-button" 
         title="Choose a TimeStamp"
         alignCenter
         >
-  <Dropdown.Item as="button">Monday</Dropdown.Item>
-  <Dropdown.Item as="button">Tuesday</Dropdown.Item>
-  <Dropdown.Item as="button">Wednesday</Dropdown.Item>
-  <Dropdown.Item as="button">Thursday</Dropdown.Item>
-  <Dropdown.Item as="button">Friday</Dropdown.Item>
-  <Dropdown.Item as="button">Saturday</Dropdown.Item>
-  <Dropdown.Item as="button">Sunday</Dropdown.Item>
-</DropdownButton>
+          <Dropdown.Item as="button">Monday</Dropdown.Item>
+          <Dropdown.Item as="button">Tuesday</Dropdown.Item>
+          <Dropdown.Item as="button">Wednesday</Dropdown.Item>
+          <Dropdown.Item as="button">Thursday</Dropdown.Item>
+          <Dropdown.Item as="button">Friday</Dropdown.Item>
+          <Dropdown.Item as="button">Saturday</Dropdown.Item>
+          <Dropdown.Item as="button">Sunday</Dropdown.Item>
+        </DropdownButton>
+
         <Sunburst
           data={data}
           onSelect={this.onSelect}
@@ -51,8 +51,7 @@ class DataVisualization extends Component {
           tooltipPosition="right"
           keyId="anagraph"
           width="600"
-          height="800"
-          
+          height="600"
         />
       </div>
 

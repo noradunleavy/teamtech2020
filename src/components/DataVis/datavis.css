@@ -1,8 +1,13 @@
-#anagraph {
+.dropdown {
     background-color: #282c34;
-    height: 110vh;
+    padding-top: 2%;
 }
 
-#dropdown-item-button{
-    background-color:#282c34;
+#anagraph {
+    background-color: #282c34;
+    height: 100vh;
+}
+
+#anagraph-svg {
+    padding-top: 2%;
 }
