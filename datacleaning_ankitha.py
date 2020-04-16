@@ -32,6 +32,7 @@ def reset_ret(ret):
 def get_num_rets(limit):
     spec = {"uuid": "eb20b8b2103f98d5f3418dfe461502a0fa3d82429460703569868243d25cc56c"}
     rets = db.usage.find(spec).limit(limit)
+    print(type(rets))
     return rets
     #you would clean each doc in rets
 
@@ -84,8 +85,10 @@ def organize_single_rets(ret):
 
 # Runs through an cleans all rets
 def organize_all_rets(rets):
-    for index in range(len(rets)):
-        rets[index] = organize_single_rets(rets[index])
+    print("organizing rets")
+    for index in rets:
+        index = organize_single_rets(index)
+        pprint(index)
     return rets
 
 # Organizing a single ret
@@ -96,6 +99,7 @@ ret = organize_apps(ret)
 ret = classify_battery(ret)
 ret = convert_timestamp(ret)
 ret = remove_unnecessary(ret)
+
 # print("Organized ret: ")
 # pprint(ret)
 
@@ -105,10 +109,10 @@ ret = remove_unnecessary(ret)
 # pprint(ret)
 
 # ##getting multple rets and organizing them
-# limit = 3
-# rets = get_num_rets(limit)
-# rets = organize_all_rets(rets)
-# # pprint(rets)
+limit = 3
+rets = get_num_rets(limit)
+rets = organize_all_rets(rets)
+pprint(rets)
 
 # converting to dataframe - takes one ret object at a time
 def json_to_dataframe(ret):
@@ -125,5 +129,5 @@ def json_to_dataframe(ret):
     dataframe = pd.DataFrame(jsons)
     return dataframe
 
-df = json_to_dataframe(ret)
-print(df)
+#df = json_to_dataframe(ret)
+#print(df)
