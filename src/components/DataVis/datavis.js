@@ -31,7 +31,6 @@ class DataVisualization extends Component {
         <DropdownButton 
         id="dropdown-item-button" 
         title="Choose a TimeStamp"
-        alignCenter
         >
           <Dropdown.Item as="button">Monday</Dropdown.Item>
           <Dropdown.Item as="button">Tuesday</Dropdown.Item>
