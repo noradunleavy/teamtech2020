@@ -23,14 +23,14 @@ list_collections =  db.list_collection_names()
 print(f"Collections: {list_collections}")
 
 def reset_ret(ret):
-    ret = db.usage.find_one()
+    ret = db.samples.find_one()
     return ret
 
 def get_num_rets(limit):
     spec = {"uuid": "eb20b8b2103f98d5f3418dfe461502a0fa3d82429460703569868243d25cc56c"}
-    rets = db.usage.find(spec).limit(limit)
+    rets = db.samples.find(spec).limit(limit)
     return rets
-    #you would clean each doc in rets 
+    #you would clean each doc in rets
 
 def organize_apps(ret):
     order = ['Foreground app', 'Visible task', 'Background process', 'Unknown', 'Service']
@@ -65,7 +65,7 @@ def organize_all_rets(rets):
     return rets
 
 ##organizing a single ret
-ret = db.usage.find_one()
+ret = db.samples.find_one()
 print(type(ret))
 
 ret = organize_apps(ret)

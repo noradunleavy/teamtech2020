@@ -18,7 +18,7 @@ mongo = MongoConnection(connectionString, 'carat')
 print(mongo)
 
 # Must set the collection before querying
-mongo.set_collection('usage')
+mongo.set_collection('samples')
 
 # Queries (.find() or .find_one() methods) are done on collection objects
 spec = {"uuid": "eb20b8b2103f98d5f3418dfe461502a0fa3d82429460703569868243d25cc56c"}

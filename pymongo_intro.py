@@ -15,7 +15,7 @@ from pprint import pprint
 import pymongo
 
 user = 'read'
-pwd = 'PASSWORD'    # FIXME: replace PASSWORD before running
+pwd = ''
 connectionString = f"mongodb+srv://{user}:{pwd}@cluster0-wn7hw.azure.mongodb.net/test?retryWrites=true&w=majority"
 print(f"Connection String: {connectionString}")
 
@@ -30,15 +30,15 @@ db = client.carat
 print("Using db carat")
 print(f"Collections: {db.list_collection_names()}")
 
-# Get one document from the usage collection
-ret = db.usage.find_one()
+# Get one document from the samples collection
+ret = db.samples.find_one()
 print(type(ret))
 pprint(ret)
 
 # Get 3 documents with specific uuid
 spec = {"uuid": "eb20b8b2103f98d5f3418dfe461502a0fa3d82429460703569868243d25cc56c"}
 limit = 3
-ret = db.usage.find(spec).limit(limit)
+ret = db.samples.find(spec).limit(limit)
 print(type(ret))
 for doc in ret:
     pprint(doc)     # Iterate over cursor to print docs
@@ -50,6 +50,6 @@ aggr = [
     {"$group": {"_id": "$uuid"}},
     {"$count": "num_unique_uuid"}
 ]
-ret = db.usage.aggregate(aggr)
+ret = db.samples.aggregate(aggr)
 print(type(ret))
 pprint(list(ret))
