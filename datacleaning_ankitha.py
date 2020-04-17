@@ -7,7 +7,7 @@ import pandas as pd
 
 
 user = 'read'
-pwd = ''    # FIXME: replace PASSWORD before running
+pwd = ''
 connectionString = f"mongodb+srv://{user}:{pwd}@cluster0-wn7hw.azure.mongodb.net/test?retryWrites=true&w=majority"
 print(f"Connection String: {connectionString}")
 
@@ -26,12 +26,12 @@ print(f"Collections: {list_collections}")
 
 # Re-get data
 def reset_ret(ret):
-    ret = db.usage.find_one()
+    ret = db.samples.find_one()
     return ret
 
 def get_num_rets(limit):
     spec = {"uuid": "eb20b8b2103f98d5f3418dfe461502a0fa3d82429460703569868243d25cc56c"}
-    rets = db.usage.find(spec).limit(limit)
+    rets = db.samples.find(spec).limit(limit)
     print(type(rets))
     return rets
     #you would clean each doc in rets
@@ -92,7 +92,7 @@ def organize_all_rets(rets):
     return rets
 
 # Organizing a single ret
-ret = db.usage.find_one()
+ret = db.samples.find_one()
 # print(type(ret))
 
 ret = organize_apps(ret)
