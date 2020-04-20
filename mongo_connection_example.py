@@ -34,6 +34,11 @@ print(f"Collection is now {repr(mongo.collection_name)}")
 # Another query on different collection (.get_one_doc() calls .find_one())
 print(mongo.get_one_doc())
 
+# Get all possible category names
+categories = mongo.get_distinct("categoryName")
+print(categories)
+print(len(categories))
+
 mongo.set_collection("samples")
 # Get all battery level categorizations present in database
 print(mongo.get_distinct("batteryStatus"))
