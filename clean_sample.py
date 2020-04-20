@@ -15,30 +15,30 @@ from pprint import pprint
 
 from pandas import DataFrame, Timestamp
 
-from carat_db import SamplesCollection
+from mongo_connection import MongoConnection
 
 
-USER = 'read'
-PWD = ''
+USER = "read"
+PWD = ""
 CONNECTION_STRING = f"mongodb+srv://{USER}:{PWD}@cluster0-wn7hw.azure.mongodb.net/test?retryWrites=true&w=majority"
 
 PRIORITY_MAPPING = {
-    'Background process': 1,
-    'Foreground app': 2,
-    'Foreground service': 3,
-    'Perceptible task': 4,
-    'Service': 5,
-    'Unknown': 6,
-    'Visible task': 7,
-    'disabled': 8,
-    'replaced': 9,
-    'uninstalled': 10
+    "Background process": 1,
+    "Foreground app": 2,
+    "Foreground service": 3,
+    "Perceptible task": 4,
+    "Service": 5,
+    "Unknown": 6,
+    "Visible task": 7,
+    "disabled": 8,
+    "replaced": 9,
+    "uninstalled": 10
 }
 BATTERY_STATUS_MAPPING = {
-    'charging': 1,
-    'discharging': 2,
-    'full': 3,
-    'not charging': 4
+    "charging": 1,
+    "discharging": 2,
+    "full": 3,
+    "not charging": 4
 }
 
 def get_priority_map():
@@ -71,10 +71,10 @@ def encode_battery_status(battery_status):
 
 def encode_doc(doc):
     """ Converts timestamp and encodes batteryStatus and priority """
-    doc['timestamp'] = convert_timestamp(doc['timestamp'], doc['timeZone'])
-    doc['batteryStatus'] = encode_battery_status(doc['batteryStatus'])
-    for app in doc['apps']:
-        app['priority'] = encode_priority(app['priority'])
+    doc["timestamp"] = convert_timestamp(doc["timestamp"], doc["timeZone"])
+    doc["batteryStatus"] = encode_battery_status(doc["batteryStatus"])
+    for app in doc["apps"]:
+        app["priority"] = encode_priority(app["priority"])
     return doc
 
 def expand_dict(doc):
@@ -108,11 +108,11 @@ def drop_unwanted(dataframe):
 def get_dataframe(uuid):
     """ Returns clean dataframe with all samples for user uuid """
     # Connect to Mongo
-    samples = SamplesCollection(CONNECTION_STRING)
+    mongo = MongoConnection(CONNECTION_STRING, "carat", "samples")
 
     # Build list of encoded, expanded samples
     doc_list = []
-    for sample in samples.get_docs({'uuid': uuid}):
+    for sample in mongo.get_docs({"uuid": uuid}):
         expanded_sample = expand_dict(encode_doc(sample))
         doc_list.extend(expanded_sample)
 
@@ -179,3 +179,6 @@ if __name__ == "__main__":
 
     df = drop_unwanted(df)
     print(df)
+
+    ## Test all
+    print(get_dataframe(example_doc["uuid"]))
