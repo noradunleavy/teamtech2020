@@ -1,32 +1,55 @@
 """
+mongo_connection_example.py
+
 Example for using class MongoConnection
 
-Author: Samantha Walter <sjw2@illinois.edu>
+Author(s): Samantha Walter <sjw2@illinois.edu>
 """
 
 from mongo_connection import MongoConnection
 
 
-user = 'read'
-pwd = ''    # FIXME: replace PASSWORD before running
-connectionString = f"mongodb+srv://{user}:{pwd}@cluster0-wn7hw.azure.mongodb.net/test?retryWrites=true&w=majority"
+USER = "read"
+PWD = ""
+CONNECTION_STRING = f"mongodb+srv://{USER}:{PWD}@cluster0-wn7hw.azure.mongodb.net/test?retryWrites=true&w=majority"
 
 # Build a connection object with the desired database
-mongo = MongoConnection(connectionString, 'carat')
+mongo = MongoConnection(CONNECTION_STRING, "carat", "samples")
 
 # What the connection object looks like when printed
 print(mongo)
 
-# Must set the collection before querying
-mongo.set_collection('samples')
+# Class instance attributes
+print(mongo.db_name)
+print(mongo.collection_name)
 
-# Queries (.find() or .find_one() methods) are done on collection objects
-spec = {"uuid": "eb20b8b2103f98d5f3418dfe461502a0fa3d82429460703569868243d25cc56c"}
-print(mongo.get_collection().find(spec).limit(2))
+# Query collection (.get_docs() calls .find())
+prototype = {"uuid": "eb20b8b2103f98d5f3418dfe461502a0fa3d82429460703569868243d25cc56c"}
+print(mongo.get_docs(prototype).limit(1))
 
 # Change to another collection
-mongo.set_collection('categories')
-print(f"Collection is now {repr(mongo.get_collection_name())}")
+mongo.set_collection("categories")
+print(f"Collection is now {repr(mongo.collection_name)}")
 
-# Another query on different collection
-print(mongo.get_collection().find_one())
+# Another query on different collection (.get_one_doc() calls .find_one())
+print(mongo.get_one_doc())
+
+mongo.set_collection("samples")
+# Get all battery level categorizations present in database
+print(mongo.get_distinct("batteryStatus"))
+# Access nested keys with .
+print(mongo.get_distinct("apps.priority"))
+
+# For reference, the keys in the sample collection are as follows
+samples_keys = [
+    '_id',
+    'uuid',
+    'timestamp',
+    'batteryLevel',
+    'batteryStatus',
+    'timeZone',
+    'mobileCountryCode',
+    'apps',
+    'apps.processName',
+    'apps.priority'
+]
