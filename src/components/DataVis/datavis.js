@@ -1,40 +1,66 @@
 import React, {Component} from 'react';
-import Sunburst from 'sunburst-chart';
+//import ReactDOM from 'react-dom';
+import Sunburst from './Sunburst';
 import data from './data';
 import './datavis.css';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Dropdown from 'react-bootstrap/Dropdown';
+//import DropdownButton from 'react-bootstrap/DropdownButton';
+//import Dropdown from 'react-bootstrap/Dropdown';
+import Calendar from 'react-date-range-calendar';
+//import 'react-calendar/dist/Calendar.css';
+//import { CalendarPicker, RangePicker } from 'react-minimal-datetime-range';
+//import 'react-minimal-datetime-range/lib/react-minimal-datetime-range.min.css';
 
-<head>
-  <script src = "//unpkg.com/sunburst-chart"></script>
-  <style>body {margin} </style>
-</head>
-export const DataVisualization = () => (
 
-<body>
-  <div id = "chart"></div>
-  <script>
-    Sunburst()
-      .data({data})
-      .tooltipContent((d,node) => 'Size: <i>${Node.value}</i>')
-      (document.getElementById('chart'));
-  </script>
-</body>
-)
+export default class DataVisualization extends React.Component {
+  onChange = date=> this.ListeningStateChangedEvent({date})
+  state = { date: new Date()}
+  render() {
+    return (
+      <div>
+        <Calendar
+          onChange={this.onChange}
+          value={this.state.date}
+          onSelect={(startDate, endDate, validDateRange) => {
+            console.log(
+              startDate,
+              " this is the start date",
+              endDate,
+              " this is the end date value.......",
+              " and this is the validDateRange",
+              validDateRange
+            );
+          }}
+          onChange={selectedDate => {
+            console.log("here is the selected date", selectedDate);
+          }}
+        />
+      <Sunburst data={data}
+      width="1500" 
+      height="900"           
+      count_member="size"
+      labelFunc={(node)=>node.data.name}
+      _debug={true}
+       />
 
-//const options = [
- // 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
-//];
-//const defaultOption = options[0];
+      </div>
+    )
+  }
+}
 /*
-class DataVisualization extends Component {
+
+  
+const options = [
+'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+];
+const defaultOption = options[0];
+
+class DataVisualization extends React.Component {
 
   onSelect(event){
     console.log(event);
   }
-*/
 
-/*
+
   render() {
     return (
       <div>
@@ -52,19 +78,21 @@ class DataVisualization extends Component {
         </DropdownButton>
         
         <Sunburst
-          data={data}
-          onSelect={this.onSelect}
-          scale="linear"
-          tooltipContent={<div class="sunburstTooltip" style="position:absolute; color:'black'; z-index:10; background: #e2e2e2; padding: 5px; text-align: center;" />} // eslint-disable-line
-          tooltip
-          tooltipPosition="right"
-          keyId="anagraph"
-          width="600"
-          height="600"
-        />
+           data={data}
+           width="880"
+           height="880"
+           count_member="size"
+           labelFunc={(node)=>node.data.name}
+           _debug={true}
+         />
       </div>
     );
   }
 }
+
+ReactDOM.render(
+  <DataVisualization/>,
+  document.querySelector('#app')
+);
 */
 //export default DataVisualization;

@@ -1,9 +1,13 @@
 
-.dropdown {
-    background-color: #282c34;
-    padding-top: 2%;
-    
+.row
+{
+    background-color:#282c34;
 }
+.sunburst-wrapper
+{
+    background-color:#282c34;
+}
+
 
 #anagraph {
     background-color: #282c34;
