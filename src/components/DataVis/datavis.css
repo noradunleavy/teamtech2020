@@ -1,19 +1,18 @@
 
-.row
-{
-    background-color:#282c34;
-}
-.sunburst-wrapper
-{
-    background-color:#282c34;
+.row {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    height: 5%;
 }
 
+.sunburst-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-#anagraph {
+.data-vis-page {
     background-color: #282c34;
-    height: 100vh;
-}
-
-#anagraph-svg {
-    margin-top: 2%;
+    height: auto;
 }
