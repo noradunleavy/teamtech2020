@@ -8,6 +8,7 @@ import {useEffect, useState} from "react";
 //import {DataVisualizationTwo} from './components/datavis.js';
 //import Sunburst from 'react-sunburst-d3-v4';
 //import data from './data';
+import {APIClient} from './components/axioswrapper.js'
 
 
   export default class App extends React.Component {
@@ -18,11 +19,10 @@ import {useEffect, useState} from "react";
             fetch('/framework').then(res => res.json()).then(data=> {
                 setCurrentData(data.request);
             });
-        }, []); 
-              var data = api.get_all_frameworks().data  
-*/   
-    render() {
-
+        }, []); */
+        var data = getAllSamples()
+    render() {           
+      
       return (
           <React.Fragment>
             <Router>
@@ -31,6 +31,7 @@ import {useEffect, useState} from "react";
                 <Route exact path="/" component={DataVisualization} />
                 <Route path="/settings" component={Settings} />
               </Switch>
+              <p>The data is {data.text} </p>
             </Router>
              
 

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import React, {Component} from 'react';
 
 const BASE_URI = 'http://localhost:5000';
 
@@ -7,15 +8,22 @@ const client = axios.create({
  json: true 
 });
 
-class APIClient {
+class APIClient extends Component{
 
  constructor(accessToken) {
    this.accessToken = accessToken;
  }
 
- getFramework() {
-   return this.perform('get', '/framework');
+ getOneCategory() {
+   return this.perform('get', '/categories/<processName>')
  }
+ getAllSamples() {
+  return this.perform('get', '/samples')
+}
+getOneUser() {
+  return this.perform('get', '/samples/<uuid>')
+}
+
 
  async perform (method, resource, data) {
    return client({
