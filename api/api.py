@@ -1,39 +1,49 @@
-from flask import Flask, jsonify, request
-from flask.ext.pymongo import PyMongo
+from flask import Flask
+
+from mongo_connection import MongoConnection
+
+
+USER = 'frontend'
+SECRET = ''
+URI = f'mongodb+srv://{USER}:{SECRET}@cluster0-wn7hw.azure.mongodb.net/?retryWrites=true&w=majority'
 
 app = Flask(__name__)
 
-app.config['MONGO_DBNAME'] = 'productivity_data'
-app.config['MONGO_URI'] = ' mongodb+srv://frontend:GZK3WsgOV9IC7NP0@cluster0-wn7hw.azure.mongodb.net/?retryWrites=true&w=majority'
+mongo = MongoConnection(URI, db='carat')
 
-mongo = PyMongo(app)
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
 
-@app.route('/framework', methods=['GET'])
-def get_all_frameworks():
-    framework = mongo.db.framework
+@app.route('/connect')
+def connect():
+    return f"MongoDB Database: {repr(mongo.db_name)}"
 
-    output = []
-
-    for q in framework.find():
-        apps = []
-	    for r in framework.find(‘apps’):
-		    apps.append({'processName' : r['processName'], 'priority': r['priority']);
-        output.append({'uuid': q['uuid'], 'timestamp': q['timestamp'], 'batteryLevel': q['batteryLevel'], 'batteryStatus': q['batteryStatus']})
-
-    return jsonify({'result': output})
-
-@app.route('/framework/<uuid>', methods=['GET'])
-def get_one_framework(uuid):
-    framework = mongo.db.framework
-
-    q = framework.find_one({'uuid': uuid})
-
-    if q:
-        output = {'uuid': q['uuid'], 'processName': q['processName'], 'priority': q['priority'], 'timestamp': q['timestamp'], 'batteryLevel': q['batteryLevel'], 'batteryStatus': q['batteryStatus']}
+@app.route('/categories/<processName>', methods=['GET'])
+def get_one_category(processName):
+    response = mongo.db['categories'].find_one({'processName': processName}, {'_id':0})
+    if response:
+        return response
     else:
-        output = 'No results found'
+        return 'No matches'
+    return
 
-    return jsonify({'result': output})
+@app.route('/samples', methods=['GET'])
+def get_all_samples():
+    """ Returns enumerated dict of a limit of 5 documents """
+    response = {}
+    for num,doc in enumerate(mongo.db['samples'].find(None,{'_id':0}).limit(5)):
+        response[num] = doc
+    return response
+
+@app.route('/samples/<uuid>', methods=['GET'])
+def get_one_use(uuid):
+    response = mongo.db['samples'].find_one({'uuid': uuid}, {'_id':0})
+    if response:
+        return response
+    else:
+        return 'No matches'
+    return
 
 
 if __name__ == '__main__':
