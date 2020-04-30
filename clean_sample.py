@@ -168,9 +168,13 @@ def get_docs_with_category_list(mongo, uuid):
     return mongo.db["samples"].aggregate(cat_list_pipeline)
 
 def convert_timestamp(timestamp, time_zone):
-    """ Returns pandas Timestamp object from UTC timestamp """
+    """
+    Returns pandas Timestamp object -- timezone unaware with local time --
+    from UTC timestamp
+    """
     ts_utc = Timestamp(timestamp, unit="s", tz="UTC")
-    ts = ts_utc.astimezone(time_zone)
+    ts_tz_aware = ts_utc.astimezone(time_zone)
+    ts = ts_tz_aware.tz_localize(None)
     return ts
 
 def encode_priority(priority):
