@@ -206,7 +206,7 @@ def encode_doc(doc):
     """ Returns OrderedDict with encoded values
         Columns (4 + 51 categories):
             "uuid"          : [str],
-            "timestamp"     : [pd.Timestamp],
+            "ds"            : [pd.Timestamp],
             "batteryLevel"  : [int[0,99]],
             "batteryStatus" : [int[0,4]],
             categoryName    : [int]
@@ -214,7 +214,7 @@ def encode_doc(doc):
     ordered_dict = OrderedDict(
         {
             "uuid":             doc["uuid"],
-            "timestamp":        convert_timestamp(doc["timestamp"], doc["timeZone"]),
+            "ds":               convert_timestamp(doc["timestamp"], doc["timeZone"]),
             "batteryLevel":     doc["batteryLevel"],
             "batteryStatus":    encode_battery_status(doc["batteryStatus"])
         }
