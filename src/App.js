@@ -4,24 +4,23 @@ import Nav from 'react-bootstrap/Nav'
 import DataVisualization from './components/DataVis/datavis.js';
 import {Settings} from './components/settings.js';
 import {NavigationBar} from './components/NavigationBar.js'
-import {useEffect, useState} from "react";
-//import {DataVisualizationTwo} from './components/datavis.js';
-//import Sunburst from 'react-sunburst-d3-v4';
-//import data from './data';
-import {api} from '../api/api.py'
-
+import {APIClient} from './components/axioswrapper.js'
+import API from './api'
 
   export default class App extends React.Component {
 
-    /* const [CurrentData, setCurrentData] = useState(0)
-
-        useEffect(()=> {
-            fetch('/framework').then(res => res.json()).then(data=> {
-                setCurrentData(data.request);
-            });
-        }, []); */   
     render() {
-      var data = api.get_all_frameworks().data  
+        //var data = getAllSamples();
+        // var myApi = new APIClient({url: 'http://localhost:5000/api'})
+        // myApi.getAllSamples()
+        const myAPI = new API({url: 'http://localhost:5000'})
+        console.log("DATA FROM ENDPOINT: ")
+        myAPI.endpoints.get.getAllSamples()
+            .then(({data}) => console.log(data))
+
+        //myAPI.createEntity({name: '/api'})
+        // myAPI.endpoints.getAllSamples()
+        //     .then(({data}) => console.log(data))
 
       return (
           <React.Fragment>
@@ -32,8 +31,6 @@ import {api} from '../api/api.py'
                 <Route path="/settings" component={Settings} />
               </Switch>
             </Router>
-             <p>The data is {data}</p> 
-
           </React.Fragment>
       );
     }
