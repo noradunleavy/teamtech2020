@@ -90,7 +90,7 @@ class Sunburst extends React.Component {
         transitionDuration: 500,
         colorFunc: (node, current_color) => current_color,
         key_member: 'key',
-        font_size: 7,
+        font_size: 20,
         tooltipX: 20,
         tooltipY: 20,
         saturation: .5,
@@ -183,7 +183,7 @@ class Sunburst extends React.Component {
 
 /**
  * recomputes slice colors. If the color function changes this should be called
- * to update to the new color sheme.
+ * to update to the new color scheme.
 */
     updateColor()  {
         this.props._debug && this.props._log("Sunburst: updateColor()")
@@ -254,7 +254,7 @@ class Sunburst extends React.Component {
                     .style('pointer-events', 'none')
                     .style('dominant-baseline', 'middle')
                     .style('text-anchor', 'middle')
-                    //.attr('display', d => this._textFits(d) ? null : 'none')
+                //.attr('display', d => this._textFits(d) ? null : 'none')
 
                 text.append('textPath')
                     .attr('startOffset','50%')
@@ -299,7 +299,7 @@ class Sunburst extends React.Component {
                 // get a selection of the associated text element
                 var arcText = d3Select(a[i].parentNode).select("text textPath");
                 // fade in the text element and recalculate positions
-                arcText.transition(this.props.transitionDuration / 2)
+                arcText.transition(this.props.transitionDuration /2)
                     .attr("opacity", 1)
                     .text((d) => {
                         const text = this._getLabelText(d)
@@ -317,17 +317,19 @@ class Sunburst extends React.Component {
         const angle = (this.arc.endAngle()(d) - this.arc.startAngle()(d)) * 57.296
         const radius = this.arc.outerRadius()(d)
         const arclength =  2*Math.PI*radius*(angle / 360)
-        return label.length * this.props.font_size < arclength;
+        return label.length * this.props.font_size < arclength || label.length * this.props.font_size > arclength;
     }
+    
 
     _getLabelText(d) {
         this.props._debug && this.props._log("Sunburst: _getLabelText(d)")
         var label
+        //var x
         label = this.props.labelFunc && this.props.labelFunc(d)
         if (this._textFits(d,label))
             return label
-        label = this.props.condensedLabelFunc && this.props.condensedLabelFunc(d)
-        if (this._textFits(d,label))
+       label = this.props.condensedLabelFunc && this.props.condensedLabelFunc(d)
+       if (this._textFits(d,label))
             return label
         return null
     }
