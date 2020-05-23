@@ -1,39 +1,64 @@
 import React, {Component} from 'react';
-import { Helmet } from "react-helmet";
-import Navbar from 'react-bootstrap/Navbar'
-import Nav from 'react-bootstrap/Nav'
-import Button from 'react-bootstrap/Button'
-import Form from 'react-bootstrap/Form'
-import FormControl from 'react-bootstrap/FormControl'
-import { Switch, Route, Router, BrowserRouter, Redirect, UseHistory } from 'react-router-dom';
-import Settings from '../settings.js';
-import { render } from '@testing-library/react';
-import Sunburst from 'react-sunburst-d3-v4';
+import Sunburst from './Sunburst';
 import data from './data';
 import './datavis.css';
- 
-class DataVisualization extends Component {
-  onSelect(event){
-    console.log(event);
+import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
+//import Calendar from 'react-date-range-calendar';
+//import 'bootstrap/dist/css/bootstrap.css';
+//require('react-datetime-range-picker/dist/style.css');  
+//require('react-datetime-range-picker/dist/index.js');
+
+export default class DataVisualization extends Component {
+  //constructor(props) {
+    //super(props);
+    //this.state = {date: new Date()};
+  //}
+
+  state = 
+  {
+    date: [new Date(), new Date()]
   }
+
+  onChange = date => this.setState({date})
+  //onChange = selectedDate => {
+    //console.log("Selected Date: ", selectedDate);
+  
 
   render() {
     return (
-      <div>
-        <Sunburst
-          data={data}
-          onSelect={this.onSelect}
-          scale="linear" // or exponential
-          tooltipContent={<div class="sunburstTooltip" style="position:absolute; color:'black'; z-index:10; background: #e2e2e2; padding: 5px; text-align: center;" />} // eslint-disable-line
-          tooltip
-          tooltipPosition="right"
-          keyId="anagraph"
-          width="480"
-          height="400"
+      
+      <div className="data-vis-page">
+        <DateTimeRangePicker
+          onChange={this.onChange}
+          value={this.state.date}
+          maxDetail = "second"
+          />
+        <Sunburst data={data}
+          width="800" 
+          height="900"           
+          count_member="size"
+          labelFunc={(node)=>node.data.name}
+          //labelFunc= {(node)=>node.data.timestamp}
+          _debug={true}
         />
       </div>
     );
   }
 }
 
-export default DataVisualization;
+/*
+<Calendar
+          value={this.state.date}
+          onSelect={(startDate, endDate, validDateRange) => {
+            console.log(
+              startDate,
+              " this is the start date",
+              endDate,
+              " this is the end date value.......",
+              " and this is the validDateRange",
+              validDateRange
+            );
+          }}
+          onChange={this.onChange}
+        />
+*/
