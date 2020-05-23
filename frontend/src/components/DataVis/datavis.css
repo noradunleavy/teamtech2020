@@ -1,0 +1,32 @@
+.row {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    height: 5%;
+}
+
+.sunburst-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.react-datetimerange-picker--enabled
+{
+    border: thin solid #575d66;
+    background-color:#575c66;
+    width: 37%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.react-datetimerange-picker__wrapper
+{
+    background-color: #575c66;
+    border: thin solid #575c66;
+
+}
+
+.data-vis-page {
+    background-color: #282c34;
+    height: auto;
+}
