@@ -1,4 +1,7 @@
-
+.react-datetimerange-picker--enabled
+{
+    background-color: #FFFFFF;
+}
 .row {
     width: 100%;
     align-items: center;

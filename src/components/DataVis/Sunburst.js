@@ -95,7 +95,7 @@ class Sunburst extends React.Component {
         tooltipY: 20,
         saturation: .5,
         lightness: .5,
-        child_brightness: 1.5,
+        child_brightness: 1,
         _debug: false,
         _log: console.log,
         _warn: console.warn,
@@ -269,7 +269,7 @@ class Sunburst extends React.Component {
     _update(d, i, a) {
         this.props._debug && this.props._log("Sunburst: _update(d, i, a)")
 
-        if (this.lastSelect && a && this.lastSelect == a[i].id)
+        if (this.lastSelect && a && this.lastSelect === a[i].id)
             return
 
         this.lastSelect = a && a[i].id
@@ -414,7 +414,7 @@ class Sunburst extends React.Component {
         current.fill = current.parent.fill.brighter(child_brightness);
         const thishsl = d3Hsl(current.fill);
         hue = this.hueDXScale(current.x0);
-        const colorshift = thishsl.h + (hue / 4);
+        const colorshift = thishsl.h + (hue / 5); //used to be 4 made it 5 to make children darker
         const c = d3Hsl(colorshift, thishsl.s, thishsl.l)
         //return (this.props.colorFunc || this.props.colorFunc(d,c)) || c
         const hasColorFn = !!this.props.colorFunc;
