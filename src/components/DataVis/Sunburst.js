@@ -90,7 +90,7 @@ class Sunburst extends React.Component {
         transitionDuration: 500,
         colorFunc: (node, current_color) => current_color,
         key_member: 'key',
-        font_size: 20,
+        font_size: 9,
         tooltipX: 20,
         tooltipY: 20,
         saturation: .5,
@@ -317,7 +317,7 @@ class Sunburst extends React.Component {
         const angle = (this.arc.endAngle()(d) - this.arc.startAngle()(d)) * 57.296
         const radius = this.arc.outerRadius()(d)
         const arclength =  2*Math.PI*radius*(angle / 360)
-        return label.length * this.props.font_size < arclength || label.length * this.props.font_size > arclength;
+        return label.length * this.props.font_size < arclength //|| label.length * this.props.font_size > arclength;
     }
     
 
