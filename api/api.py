@@ -1,5 +1,5 @@
 from flask import Flask
-
+from flask_cors import CORS
 from mongo_connection import MongoConnection
 
 
@@ -8,7 +8,7 @@ SECRET = ''
 URI = f'mongodb+srv://{USER}:{SECRET}@cluster0-wn7hw.azure.mongodb.net/?retryWrites=true&w=majority'
 
 app = Flask(__name__)
-
+CORS(app)
 mongo = MongoConnection(URI, db='carat')
 
 @app.route('/', methods=['GET'])

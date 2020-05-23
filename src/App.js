@@ -10,9 +10,15 @@ import API from './api'
 export default class App extends React.Component {
     render() {
         const myAPI = new API({url: 'http://localhost:5000'})
+        myAPI.createEntity({ name: 'get'})
         console.log("DATA FROM ENDPOINT: ")
         myAPI.endpoints.get.getAllSamples()
-            .then(({data}) => console.log(data))
+            .then(({data}) => console.log(data)).catch(error => {
+            console.log(error.message);
+        })
+
+        // myAPI.endpoints.get.getAllSamples()
+        //     .then(({data}) => console.log(data))
         return (
             <React.Fragment>
                 <Router>

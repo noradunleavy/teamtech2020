@@ -36,13 +36,13 @@ class API {
     createBasicCRUDEndpoints( { name } ) {
         var endpoints = {}
 
-        const resourceURL = `${this.url}/${name}`
+        const resourceURL = `${this.url}`
 
         //endpoints.hello = ({ params={}}, config={} ) => axios.get(resourceURL, { params }, config)
 
-        endpoints.getAllSamples = () => axios.get('/samples')
+        endpoints.getAllSamples = () => axios.get(`${resourceURL}/samples`)
 
-        endpoints.getOneUser = ({ id: uuid }, config={}) =>  axios.get(`${'/samples'}/${uuid}`, config)
+        endpoints.getOneUser = ({ id: uuid }, config={}) =>  axios.get(`${ this.url + '/samples'}/${uuid}`, config)
 
         endpoints.getOneProcess = ({ id: processName }, config={}) =>  axios.get(`${'/categories'}/${processName}`, config)
 
