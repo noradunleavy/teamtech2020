@@ -61,12 +61,11 @@ if __name__ == "__main__":
     pipeline = [
         {
             "$match": {
-                "uuid": "5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe"
-                # ,
-                # "timestamp": {
-                #     "$gt": 1512468142,
-                #     "$lt": 1512512500
-                # }
+                "uuid": "5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe",
+                "timestamp": {
+                    "$gt": 1512468142,
+                    "$lt": 1512512500
+                }
             }
         },
         {
@@ -88,16 +87,9 @@ if __name__ == "__main__":
             }
         },
         {
-            "$project": {
-                "_id": 0,
-                "processName": "$_id",
-                "numSamplesActiveDuring": 1
-            }
-        },
-        {
             "$lookup": {
                 "from": "categories",
-                "localField": "processName",
+                "localField": "_id",
                 "foreignField": "processName",
                 "as": "category"
             }
@@ -114,8 +106,35 @@ if __name__ == "__main__":
             }
         },
         {
+            "$group": {
+                "_id": "$categoryName",
+                "children": {
+                    "$push": {
+                        "name": "$_id",
+                        "size": "$numSamplesActiveDuring"
+                    }
+                }
+            }
+        },
+        {
+            "$group": {
+                "_id": None,
+                "children": {
+                    "$push": {
+                        "name": "$_id",
+                        "children": "$children"
+                    }
+                }
+            }
+        },
+        {
+            "$set": {
+                "name": "Category"
+            }
+        },
+        {
             "$project": {
-                "category": 0
+                "_id": 0
             }
         }
     ]
@@ -124,4 +143,4 @@ if __name__ == "__main__":
     ret = mongo.db.samples.aggregate(pipeline)
     ret_lst = list(ret)
     pprint(ret_lst)
-    print(len(ret_lst))
+    # print(len(ret_lst))
