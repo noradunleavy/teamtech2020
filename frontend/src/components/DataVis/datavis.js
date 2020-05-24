@@ -10,30 +10,40 @@ export default class DataVisualization extends Component {
     super(props);
     this.state = {
       date: [new Date(), new Date()],
-      startTimestamp: 0,
-      endTimestamp: 0,
+      startTimestamp: undefined,
+      endTimestamp: undefined,
       sunburstData: null,
+      renderSunburst: false
     };
   }
 
   async componentDidMount() {
-    const myAPI = new API({url: 'http://localhost:5000'})
-    myAPI.createEntity({ name: 'get'})
-    // Call GET endpoint for sunburst data and store in this.state.sunburstData
-    await myAPI.endpoints.get.sunburstData({uuid: '5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe'}, {start_timestamp: this.state.startTimestamp }, {end_timestamp: this.state.endTimestamp })
-        .then(response => this.setState({
-          sunburstData: JSON.parse(JSON.stringify(response.data)),
-        }));
-    console.log(this.state.sunburstData);
+    // Get default sunburst data 
+    let data = await this.getSunburstData(undefined, undefined);
+    this.setState({
+      sunburstData: data,
+    })
   }
 
-  onChangeDateTime = date => {
+  getSunburstData = async(start, end) => {
+    let data = null
+    const myAPI = new API({url: 'http://localhost:5000'})
+    myAPI.createEntity({ name: 'get'})
+    await myAPI.endpoints.get.sunburstData({uuid: '5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe'}, {start_timestamp: start}, {end_timestamp: end})
+      .then(response => data = response.data);
+    
+    return JSON.parse(JSON.stringify(data));
+  }
+
+  onChangeDateTime = async(date) => {
+    // Convert date into start and end unix timestamps
     let start = Math.floor(date[0].getTime() / 1000)
     let end = Math.floor(date[1].getTime() / 1000)
+
+    let new_sunburst_data = await this.getSunburstData(start, end);
     this.setState({
       date,
-      startTimestamp: start,
-      endTimestamp: end,
+      sunburstData: new_sunburst_data,
     })
   }
 
