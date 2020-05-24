@@ -7,15 +7,18 @@ const Data = {
             {
             "name": "Instagram",
             
-            "size": 1000
+            "size": 1000,
+            //"timestamp": 1513103100 
             },
             {
             "name": "Facebook",
-            "size": 1000
+            "size": 1000,
+            //"timestamp": 1513103100 
             },
             {
             "name": "Twitter",
-            "size": 1000
+            "size": 1000,
+            //"timestamp": 1513103100 
             }
         ]
         },
@@ -28,7 +31,7 @@ const Data = {
             },
             {
             "name": "Slack",
-            "size": 2000
+            "size": 1000
             },
             {
             "name": "Trello",
