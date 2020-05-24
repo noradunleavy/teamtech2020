@@ -47,14 +47,18 @@ class API {
 
         endpoints.sunburstData = function ({ uuid}, {start_timestamp}, {end_timestamp}) { 
             var urll = `${resourceURL}/sunburst/?uuid=${uuid}`;
+            
             if (start_timestamp !== undefined) {
                 urll = urll + `&start=${start_timestamp}`
             }
             if (end_timestamp !== undefined) {
                 urll = urll + `&end=${end_timestamp}`
             }
-            axios.get(urll)
+
+            const response = axios.get(urll)
+            return response
         }
+
         return endpoints
 
     }
