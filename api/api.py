@@ -11,7 +11,7 @@ URI = f'mongodb+srv://{USER}:{SECRET}@cluster0-wn7hw.azure.mongodb.net/?retryWri
 
 app = Flask(__name__)
 CORS(app)
-mongo = MongoConnection(URI, db='carat')
+mongo = MongoConnection(URI, db='carat', collection='samples')
 
 @app.route('/', methods=['GET'])
 def hello_world():

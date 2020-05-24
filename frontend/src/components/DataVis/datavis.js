@@ -3,33 +3,38 @@ import Sunburst from './Sunburst';
 import data from './data';
 import './datavis.css';
 import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
-//import Calendar from 'react-date-range-calendar';
-//import 'bootstrap/dist/css/bootstrap.css';
-//require('react-datetime-range-picker/dist/style.css');  
-//require('react-datetime-range-picker/dist/index.js');
+
+import API from '../../api';
 
 export default class DataVisualization extends Component {
-  //constructor(props) {
-    //super(props);
-    //this.state = {date: new Date()};
-  //}
-
-  state = 
-  {
-    date: [new Date(), new Date()]
+  constructor(props) {
+    super(props);
+    this.state = {
+      date: [new Date(), new Date()],
+      sunburstData: null,
+    };
   }
 
-  onChange = date => this.setState({date})
-  //onChange = selectedDate => {
-    //console.log("Selected Date: ", selectedDate);
-  
+  async componentDidMount() {
+    const myAPI = new API({url: 'http://localhost:5000'})
+    myAPI.createEntity({ name: 'get'})
+    // Call GET endpoint for sunburst data and store in this.state.sunburstData
+    await myAPI.endpoints.get.sunburstData({uuid: '5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe'}, {start_timestamp: 1512468142 }, {end_timestamp: 1512512500 })
+        .then(response => this.setState({
+          sunburstData: response.data,
+        }));
+        
+    console.log(this.state.sunburstData);
+  }
+
+  onChangeDateTime = date => this.setState({date})
 
   render() {
     return (
       
       <div className="data-vis-page">
         <DateTimeRangePicker
-          onChange={this.onChange}
+          onChange={this.onChangeDateTime}
           value={this.state.date}
           maxDetail = "second"
           />
@@ -38,27 +43,9 @@ export default class DataVisualization extends Component {
           height="900"           
           count_member="size"
           labelFunc={(node)=>node.data.name}
-          //labelFunc= {(node)=>node.data.timestamp}
           _debug={true}
         />
       </div>
     );
   }
 }
-
-/*
-<Calendar
-          value={this.state.date}
-          onSelect={(startDate, endDate, validDateRange) => {
-            console.log(
-              startDate,
-              " this is the start date",
-              endDate,
-              " this is the end date value.......",
-              " and this is the validDateRange",
-              validDateRange
-            );
-          }}
-          onChange={this.onChange}
-        />
-*/
