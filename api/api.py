@@ -45,7 +45,14 @@ def get_one_use(uuid):
         return response
     else:
         return 'No matches'
-    return
+
+@app.route('/anomalies/<uuid>')
+def get_anomalies(uuid):
+    response = mongo.db['anomalies'].find_one({'uuid': uuid}, {'_id':0})
+    if response:
+        return response
+    else:
+        return 'No matches'
 
 @app.route('/sunburst/')
 def get_sunburst_data():
