@@ -1,5 +1,5 @@
 """
-save_algo_output.py
+save_anomalies.py
 
 Module to take the dataframe of anomalies output by the ML algorithm and save
 them to MongoDB.
@@ -8,6 +8,8 @@ Author(s):  Samantha Walter <sjw2@illinois.edu>
             Ankitha Damisetty <ankithad@illinois.edu>
             Shreyah Prasad <sprasa20@illinois.edu>
 """
+
+# from pprint import pprint
 
 import numpy as np
 from pandas import DataFrame, Timestamp
@@ -41,6 +43,7 @@ def get_anomalies(uuid, output_df):
         'uuid': uuid,
         'anomalies': anom_lst
     }
+    # pprint(anom)
     return anom
 
 def save_to_mongo(document):
@@ -56,4 +59,5 @@ def save_anomalies_to_mongo(uuid, output_df):
 if __name__ == "__main__":
     uuid = "5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe"
     output_df = get_dummy_dataframe(uuid)
-    save_anomalies_to_mongo(uuid, output_df)
+    # save_anomalies_to_mongo(uuid, output_df)
+    get_anomalies(uuid, output_df)
