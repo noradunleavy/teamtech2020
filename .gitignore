@@ -22,9 +22,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# For mac users
-.DS_Store
-
 # Python
 __pycache__/
 **/*.py[cod]
