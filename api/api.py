@@ -2,28 +2,24 @@ from time import time
 
 from flask import Flask, request
 from flask_cors import CORS
+from pymongo import MongoClient
 
-from mongo_connection import MongoConnection
 
 USER = 'frontend'
 SECRET = ''
 URI = f'mongodb+srv://{USER}:{SECRET}@cluster0-wn7hw.azure.mongodb.net/?retryWrites=true&w=majority'
+mongo_db = MongoClient(URI)['carat']
 
 app = Flask(__name__)
 CORS(app)
-mongo = MongoConnection(URI, db='carat', collection='samples')
 
 @app.route('/', methods=['GET'])
 def hello_world():
     return 'Hello, World!'
 
-@app.route('/connect')
-def connect():
-    return f"MongoDB Database: {repr(mongo.db_name)}"
-
 @app.route('/categories/<processName>', methods=['GET'])
 def get_one_category(processName):
-    response = mongo.db['categories'].find_one({'processName': processName}, {'_id':0})
+    response = mongo_db['categories'].find_one({'processName': processName}, {'_id':0})
     if response:
         return response
     else:
@@ -34,13 +30,13 @@ def get_one_category(processName):
 def get_all_samples():
     """ Returns enumerated dict of a limit of 5 documents """
     response = {}
-    for num,doc in enumerate(mongo.db['samples'].find(None,{'_id':0}).limit(5)):
+    for num,doc in enumerate(mongo_db['samples'].find(None,{'_id':0}).limit(5)):
         response[num] = doc
     return response
 
 @app.route('/samples/<uuid>', methods=['GET'])
-def get_one_use(uuid):
-    response = mongo.db['samples'].find_one({'uuid': uuid}, {'_id':0})
+def get_one_sample(uuid):
+    response = mongo_db['samples'].find_one({'uuid': uuid}, {'_id':0})
     if response:
         return response
     else:
@@ -48,7 +44,7 @@ def get_one_use(uuid):
 
 @app.route('/anomalies/<uuid>')
 def get_anomalies(uuid):
-    response = mongo.db['anomalies'].find_one({'uuid': uuid}, {'_id':0})
+    response = mongo_db['anomalies'].find_one({'uuid': uuid}, {'_id':0})
     if response:
         return response
     else:
@@ -68,7 +64,7 @@ def get_sunburst_data():
 
     # Get MongoDB aggregation pipeline
     pipeline = get_sunburst_pipeline(uuid, start_timestamp, end_timestamp)
-    mongo_cursor = mongo.db.samples.aggregate(pipeline)
+    mongo_cursor = mongo_db['samples'].aggregate(pipeline)
     response_lst = list(mongo_cursor)
     if response_lst:
         return response_lst[0]
