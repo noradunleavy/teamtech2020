@@ -5,13 +5,6 @@ import {Settings} from './components/settings.js';
 import {NavigationBar} from './components/NavigationBar.js'
 
 export default class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            sunburstData: undefined,
-        }
-    }
-
     render() {
         return (
             <React.Fragment>
