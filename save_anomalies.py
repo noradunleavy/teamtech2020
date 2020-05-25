@@ -13,8 +13,8 @@ Author(s):  Samantha Walter <sjw2@illinois.edu>
 
 import numpy as np
 from pandas import DataFrame, Timestamp
+from pymongo import MongoClient
 
-from mongo_connection import MongoConnection
 
 USER = "algo_out"
 PWD = ""
@@ -48,8 +48,8 @@ def get_anomalies(uuid, output_df):
 
 def save_to_mongo(document):
     """ Opens connection to Mongo and inserts one document into the anomalies collection """
-    mongo = MongoConnection(CONNECTION_STRING, "carat", "anomalies")
-    mongo.db.anomalies.insert_one(document)
+    mongo = MongoClient(CONNECTION_STRING)
+    mongo['carat']['anomalies'].insert_one(document)
 
 def save_anomalies_to_mongo(uuid, output_df):
     """ Creates document from ML output dataframe and saves in to the anomalies collection in Mongo """
@@ -59,5 +59,5 @@ def save_anomalies_to_mongo(uuid, output_df):
 if __name__ == "__main__":
     uuid = "5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe"
     output_df = get_dummy_dataframe(uuid)
-    # save_anomalies_to_mongo(uuid, output_df)
-    get_anomalies(uuid, output_df)
+    save_anomalies_to_mongo(uuid, output_df)
+    # get_anomalies(uuid, output_df)
