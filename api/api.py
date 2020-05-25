@@ -1,3 +1,13 @@
+"""
+api.py
+
+Flask API designed to fetch data needed for web visualizations from MongoDB.
+
+Author(s):  Samantha Walter <sjw2@illinois.edu>
+            Alycia Bhargava <alyciab2@illinois.edu>
+            Niharika Dangarwala <ndanga2@illinois.edu>
+"""
+
 from time import time
 
 from flask import Flask, request
