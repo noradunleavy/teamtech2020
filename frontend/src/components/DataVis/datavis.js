@@ -18,14 +18,6 @@ export default class DataVisualization extends Component {
     };
   }
 
-  // async componentDidMount() {
-  //   // Get default sunburst data 
-  //   let data = await this.getSunburstData(undefined, undefined);
-  //   this.setState({
-  //     sunburstData: data,
-  //   })
-  // }
-
   getSunburstData = async(start, end) => {
     let data = null
     const myAPI = new API({url: 'http://localhost:5000'})
@@ -36,12 +28,21 @@ export default class DataVisualization extends Component {
     return JSON.parse(JSON.stringify(data));
   }
 
+  async componentDidMount() {
+    // Get default sunburst data 
+    let data = await this.getSunburstData(undefined, undefined);
+    this.setState({
+      sunburstData: data,
+    })
+  }
+
   onChangeDateTime = async(date) => {
     // Convert date into start and end unix timestamps
     let start = Math.floor(date[0].getTime() / 1000)
     let end = Math.floor(date[1].getTime() / 1000)
     // TODO: Need to replace with start and end vars
     let new_sunburst_data = await this.getSunburstData(1512468142, 1512512500);
+
     this.setState((prevState) => ({
       date,
       sunburstData: new_sunburst_data !== "No matches" ? new_sunburst_data : prevState.sunburstData,
@@ -63,7 +64,7 @@ export default class DataVisualization extends Component {
       labelFunc={(node)=>node.data.name}
       _debug={true}
     /> : null
-    
+    console.log(this.state.sunburstData);
     return sunburst
   }
 
@@ -76,16 +77,6 @@ export default class DataVisualization extends Component {
           maxDetail = "second"
         />
         <Button onClick={this.toggleSunburst}>View</Button>
-
-        {/* {this.state.sunburstData !== null &&
-          <Sunburst data={this.state.sunburstData}
-            width="800" 
-            height="900"           
-            count_member="size"
-            labelFunc={(node)=>node.data.name}
-            _debug={true}
-          />
-        } */}
         {this.displaySunburst()}
       </div>
     );
