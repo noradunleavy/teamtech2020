@@ -6,12 +6,8 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.1",
     "@testing-library/user-event": "^7.2.1",
-<<<<<<< HEAD:package.json
-    "@wojtekmaj/react-datetimerange-picker": "^2.3.0",
-=======
     "@wojtekmaj/react-datetimerange-picker": "^2.4.0",
     "axios": "^0.19.2",
->>>>>>> 90d2ecd0b2d245e8a57e4e4324f4b070bfbc2dd5:frontend/package.json
     "bootstrap": "^4.4.1",
     "bootstrap-daterangepicker": "^3.0.5",
     "d3": "^5.15.1",

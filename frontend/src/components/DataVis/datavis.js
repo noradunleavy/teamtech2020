@@ -75,8 +75,10 @@ export default class DataVisualization extends Component {
           onChange={this.onChangeDateTime}
           value={this.state.date}
           maxDetail = "second"
+          clearIcon = {null}
         />
-        <Button onClick={this.toggleSunburst}>View</Button>
+        <Button 
+        onClick={this.toggleSunburst}>View</Button>
         {this.displaySunburst()}
       </div>
     );
