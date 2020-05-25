@@ -4,7 +4,7 @@ import DataVisualization from './components/DataVis/datavis.js';
 import {Settings} from './components/settings.js';
 import {NavigationBar} from './components/NavigationBar.js'
 
-export default class App extends Component {
+export default class App extends React.Component {
     render() {
         return (
             <React.Fragment>
