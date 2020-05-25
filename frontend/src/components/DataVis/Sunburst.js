@@ -131,7 +131,7 @@ class Sunburst extends React.Component {
     }
 
     componentDidMount() {
-        this.props._debug && this.props._log("Sunburst: componentDidMount()")
+        this.props._debug && this.props._log("Sunburst: componentDidMount()", this.props)
         this._create();
     }
 
@@ -194,7 +194,6 @@ class Sunburst extends React.Component {
     _create() {
         this.props._debug && this.props._log("Sunburst: _create()")
         if (!this.props.data) return;
-
         const root = d3Hierarchy(this.props.data)
             .sum(function(d) { 
                 if (d[this.props.count_member] === undefined)

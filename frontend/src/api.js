@@ -38,13 +38,26 @@ class API {
 
         const resourceURL = `${this.url}`
 
-        //endpoints.hello = ({ params={}}, config={} ) => axios.get(resourceURL, { params }, config)
 
         endpoints.getAllSamples = () => axios.get(`${resourceURL}/samples`)
 
-        endpoints.getOneUser = ({ id: uuid }, config={}) =>  axios.get(`${ this.url + '/samples'}/${uuid}`, config)
+        endpoints.getOneUser = ({ uuid } ) =>  axios.get(`${resourceURL}/samples/${uuid}`)
 
-        endpoints.getOneProcess = ({ id: processName }, config={}) =>  axios.get(`${'/categories'}/${processName}`, config)
+        endpoints.getOneProcess = ({ processName } ) =>  axios.get(`${resourceURL}/categories/${processName}`)
+
+        endpoints.sunburstData = function ({ uuid}, {start_timestamp}, {end_timestamp}) { 
+            var urll = `${resourceURL}/sunburst/?uuid=${uuid}`;
+            
+            if (start_timestamp !== undefined) {
+                urll = urll + `&start=${start_timestamp}`
+            }
+            if (end_timestamp !== undefined) {
+                urll = urll + `&end=${end_timestamp}`
+            }
+
+            const response = axios.get(urll)
+            return response
+        }
 
         return endpoints
 
