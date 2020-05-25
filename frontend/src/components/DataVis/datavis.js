@@ -14,13 +14,15 @@ export default class DataVisualization extends Component {
       startTimestamp: undefined,
       endTimestamp: undefined,
       sunburstData: null,
+      defaultSunburstData: null,
       showSunburst: false,
+      showErrorMessage: false,
     };
   }
 
   getSunburstData = async(start, end) => {
     let data = null
-    const myAPI = new API({url: 'http://localhost:5000'})
+    const myAPI = new API({url: 'https://teamtech2020.herokuapp.com'})
     myAPI.createEntity({ name: 'get'})
     await myAPI.endpoints.get.sunburstData({uuid: "5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe"}, {start_timestamp: start}, {end_timestamp: end})
       .then(response => data = response.data);
@@ -32,7 +34,7 @@ export default class DataVisualization extends Component {
     // Get default sunburst data 
     let data = await this.getSunburstData(undefined, undefined);
     this.setState({
-      sunburstData: data,
+      defaultSunburstData: data,
     })
   }
 
@@ -40,13 +42,16 @@ export default class DataVisualization extends Component {
     // Convert date into start and end unix timestamps
     let start = Math.floor(date[0].getTime() / 1000)
     let end = Math.floor(date[1].getTime() / 1000)
-    // TODO: Need to replace with start and end vars
-    let new_sunburst_data = await this.getSunburstData(1512468142, 1512512500);
+    
+    // let new_sunburst_data = await this.getSunburstData(1512468142, 1512512500); // Test for entries that are actually in the db
+    let new_sunburst_data = await this.getSunburstData(start, end);
+
 
     this.setState((prevState) => ({
       date,
-      sunburstData: new_sunburst_data !== "No matches" ? new_sunburst_data : prevState.sunburstData,
+      sunburstData: new_sunburst_data !== "No matches" ? new_sunburst_data : prevState.defaultSunburstData,
       showSunburst: false,
+      showErrorMessage: new_sunburst_data == "No matches" ? true : false,
     }))
   }
 
@@ -56,17 +61,14 @@ export default class DataVisualization extends Component {
     })
   }
 
-  displaySunburst = () => {
-    let sunburst = this.state.showSunburst ? <Sunburst data={this.state.sunburstData}
-      width="800" 
-      height="900"           
-      count_member="size"
-      labelFunc={(node)=>node.data.name}
-      _debug={true}
-    /> : null
-    console.log(this.state.sunburstData);
-    return sunburst
-  }
+  displaySunburst = () => <Sunburst
+    data={this.state.sunburstData}
+    width="800" 
+    height="900"           
+    count_member="size"
+    labelFunc={(node)=>node.data.name}
+    _debug={true}
+  />
 
   render() {
     return (
@@ -77,9 +79,9 @@ export default class DataVisualization extends Component {
           maxDetail = "second"
           clearIcon = {null}
         />
-        <Button 
-        onClick={this.toggleSunburst}>View</Button>
-        {this.displaySunburst()}
+        <Button onClick={this.toggleSunburst}>View</Button>
+        { this.state.showErrorMessage && this.state.showSunburst && <p className="error-message">No entries found for this range. Showing all entries.</p> }
+        { this.state.showSunburst && this.displaySunburst() }
       </div>
     );
   }
