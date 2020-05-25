@@ -14,8 +14,8 @@ from collections import Counter, OrderedDict
 from pprint import pprint
 
 from pandas import DataFrame, Timestamp
+from pymongo import MongoClient
 
-from mongo_connection import MongoConnection
 
 USER = "read"
 PWD = ""
@@ -110,12 +110,12 @@ def get_battery_status_map():
 
 def get_process_category(process_name):
     """ Returns category name for given process name by querying Mongo """
-    mongo = MongoConnection(CONNECTION_STRING, "carat", "categories")
-    result = mongo.get_one_doc({"processName": process_name}, {"_id": 0})
+    mongo_db = MongoClient(CONNECTION_STRING)
+    result = mongo_db["categories"].find_one({"processName": process_name}, {"_id": 0})
     if result:
         return result["categoryName"]
 
-def get_docs_with_category_list(mongo, uuid):
+def get_docs_with_category_list(mongo_db, uuid):
     """ Returns Cursor to docs for uuid with list of app categories filtered by priority """
     cat_list_pipeline = [
         {
@@ -165,7 +165,7 @@ def get_docs_with_category_list(mongo, uuid):
             }
         }
     ]
-    return mongo.db["samples"].aggregate(cat_list_pipeline)
+    return mongo_db["samples"].aggregate(cat_list_pipeline)
 
 def convert_timestamp(timestamp, time_zone):
     """
@@ -233,11 +233,11 @@ def drop_unwanted(dataframe):
 def get_dataframe(uuid):
     """ Returns clean dataframe with all samples for user uuid """
     # Connect to Mongo
-    mongo = MongoConnection(CONNECTION_STRING, "carat", "samples")
+    mongo_db = MongoClient(CONNECTION_STRING)
 
     # Build list of encoded samples
     doc_list = [ encode_doc(sample)
-                 for sample in get_docs_with_category_list(mongo, uuid) ]
+                 for sample in get_docs_with_category_list(mongo_db, uuid) ]
 
     # Convert list of samples to dataframe
     df = DataFrame(doc_list)
@@ -256,8 +256,8 @@ def print_categories(uuid):
     INFORMATIVE ONLY; DON'T USE IN PRACTICE.
     Prints category mapping for one sample from one user
     """
-    mongo = MongoConnection(CONNECTION_STRING, "carat", "samples")
-    for sample in mongo.get_docs({"uuid": uuid}, limit=1):
+    mongo_db = MongoClient(CONNECTION_STRING)['carat']
+    for sample in mongo_db['samples'].find({"uuid": uuid}, limit=1):
         for app in sample["apps"]:
             ret = get_process_category(app["processName"])
             print(f"{str(ret):>19} {app['processName']}")
@@ -307,10 +307,10 @@ if __name__ == "__main__":
 
     ## Test Individual Parts
 
-    # mongo = MongoConnection(CONNECTION_STRING, "carat", "samples")
+    # mongo_db = MongoClient(CONNECTION_STRING)
 
     # ## Test get docs with categoryList
-    # docs = get_docs_with_category_list(mongo, example_doc["uuid"])
+    # docs = get_docs_with_category_list(mongo_db, example_doc["uuid"])
     # doc_list = list(docs)
     # pprint(doc_list)
     # print(len(doc_list))
