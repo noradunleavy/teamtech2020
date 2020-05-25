@@ -2,7 +2,7 @@
 clean_sample.py
 
 Module to query database, encode, clean, and format samples into a dataframe
-fit as input a ML model.
+fit for input into the ML algorithm.
 
 Author(s):  Samantha Walter <sjw2@illinois.edu>
             Ankitha Damisetty <ankithad@illinois.edu>
@@ -110,7 +110,7 @@ def get_battery_status_map():
 
 def get_process_category(process_name):
     """ Returns category name for given process name by querying Mongo """
-    mongo_db = MongoClient(CONNECTION_STRING)
+    mongo_db = MongoClient(CONNECTION_STRING)["carat"]
     result = mongo_db["categories"].find_one({"processName": process_name}, {"_id": 0})
     if result:
         return result["categoryName"]
@@ -233,7 +233,7 @@ def drop_unwanted(dataframe):
 def get_dataframe(uuid):
     """ Returns clean dataframe with all samples for user uuid """
     # Connect to Mongo
-    mongo_db = MongoClient(CONNECTION_STRING)
+    mongo_db = MongoClient(CONNECTION_STRING)["carat"]
 
     # Build list of encoded samples
     doc_list = [ encode_doc(sample)
@@ -256,8 +256,8 @@ def print_categories(uuid):
     INFORMATIVE ONLY; DON'T USE IN PRACTICE.
     Prints category mapping for one sample from one user
     """
-    mongo_db = MongoClient(CONNECTION_STRING)['carat']
-    for sample in mongo_db['samples'].find({"uuid": uuid}, limit=1):
+    mongo_db = MongoClient(CONNECTION_STRING)["carat"]
+    for sample in mongo_db["samples"].find({"uuid": uuid}, limit=1):
         for app in sample["apps"]:
             ret = get_process_category(app["processName"])
             print(f"{str(ret):>19} {app['processName']}")
@@ -307,7 +307,7 @@ if __name__ == "__main__":
 
     ## Test Individual Parts
 
-    # mongo_db = MongoClient(CONNECTION_STRING)
+    # mongo_db = MongoClient(CONNECTION_STRING)["carat"]
 
     # ## Test get docs with categoryList
     # docs = get_docs_with_category_list(mongo_db, example_doc["uuid"])
