@@ -222,12 +222,10 @@ def encode_doc(doc):
     ordered_dict.update(get_category_counts(doc["categoryList"]))
     return ordered_dict
 
-#TODO: Implement me
 def drop_unwanted(dataframe):
     """ Returns dataframe with unwanted rows/columns removed """
     # Remove rows with invalid encoding
     dataframe = dataframe[dataframe.batteryStatus != -1]
-
     return dataframe
 
 def get_dataframe(uuid):
@@ -238,6 +236,10 @@ def get_dataframe(uuid):
     # Build list of encoded samples
     doc_list = [ encode_doc(sample)
                  for sample in get_docs_with_category_list(mongo_db, uuid) ]
+
+    if not doc_list:
+        print("Error: no samples found for uuid")
+        return
 
     # Convert list of samples to dataframe
     df = DataFrame(doc_list)
