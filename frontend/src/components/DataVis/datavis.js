@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Sunburst from './Sunburst';
 import './datavis.css';
 import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
+import Button from 'react-bootstrap/Button';
 
 import API from '../../api';
 
@@ -10,32 +11,64 @@ export default class DataVisualization extends Component {
     super(props);
     this.state = {
       date: [new Date(), new Date()],
-      startTimestamp: 0,
-      endTimestamp: 0,
+      startTimestamp: undefined,
+      endTimestamp: undefined,
       sunburstData: null,
+      defaultSunburstData: null,
+      showSunburst: false,
+      showErrorMessage: false,
     };
   }
 
-  async componentDidMount() {
-    const myAPI = new API({url: 'http://localhost:5000'})
+  getSunburstData = async(start, end) => {
+    let data = null
+    const myAPI = new API({url: 'https://teamtech2020.herokuapp.com'})
     myAPI.createEntity({ name: 'get'})
-    // Call GET endpoint for sunburst data and store in this.state.sunburstData
-    await myAPI.endpoints.get.sunburstData({uuid: '5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe'}, {start_timestamp: this.state.startTimestamp }, {end_timestamp: this.state.endTimestamp })
-        .then(response => this.setState({
-          sunburstData: JSON.parse(JSON.stringify(response.data)),
-        }));
-    console.log(this.state.sunburstData);
+    await myAPI.endpoints.get.sunburstData({uuid: "5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe"}, {start_timestamp: start}, {end_timestamp: end})
+      .then(response => data = response.data);
+    
+    return JSON.parse(JSON.stringify(data));
   }
 
-  onChangeDateTime = date => {
-    let start = Math.floor(date[0].getTime() / 1000)
-    let end = Math.floor(date[1].getTime() / 1000)
+  async componentDidMount() {
+    // Get default sunburst data 
+    let data = await this.getSunburstData(undefined, undefined);
     this.setState({
-      date,
-      startTimestamp: start,
-      endTimestamp: end,
+      defaultSunburstData: data,
     })
   }
+
+  onChangeDateTime = async(date) => {
+    // Convert date into start and end unix timestamps
+    let start = Math.floor(date[0].getTime() / 1000)
+    let end = Math.floor(date[1].getTime() / 1000)
+    
+    // let new_sunburst_data = await this.getSunburstData(1512468142, 1512512500); // Test for entries that are actually in the db
+    let new_sunburst_data = await this.getSunburstData(start, end);
+
+
+    this.setState((prevState) => ({
+      date,
+      sunburstData: new_sunburst_data !== "No matches" ? new_sunburst_data : prevState.defaultSunburstData,
+      showSunburst: false,
+      showErrorMessage: new_sunburst_data == "No matches" ? true : false,
+    }))
+  }
+
+  toggleSunburst = () => {
+    this.setState({
+      showSunburst: true,
+    })
+  }
+
+  displaySunburst = () => <Sunburst
+    data={this.state.sunburstData}
+    width="800" 
+    height="900"           
+    count_member="size"
+    labelFunc={(node)=>node.data.name}
+    _debug={true}
+  />
 
   render() {
     return (
@@ -44,16 +77,11 @@ export default class DataVisualization extends Component {
           onChange={this.onChangeDateTime}
           value={this.state.date}
           maxDetail = "second"
-          />
-        {this.state.sunburstData !== null && 
-          <Sunburst data={this.state.sunburstData}
-            width="800" 
-            height="900"           
-            count_member="size"
-            labelFunc={(node)=>node.data.name}
-            _debug={true}
-          />
-        }
+          clearIcon = {null}
+        />
+        <Button onClick={this.toggleSunburst}>View</Button>
+        { this.state.showErrorMessage && this.state.showSunburst && <p className="error-message">No entries found for this range. Showing all entries.</p> }
+        { this.state.showSunburst && this.displaySunburst() }
       </div>
     );
   }

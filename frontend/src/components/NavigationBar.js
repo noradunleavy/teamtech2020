@@ -2,7 +2,7 @@ import React from 'react';
  import { Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap';
  export const NavigationBar = () => (
          <Navbar bg="dark" variant="dark">
-             <Navbar.Brand href="/">Productivity</Navbar.Brand>
+             <Navbar.Brand href="/">SWE Illinois Team Tech x Cisco</Navbar.Brand>
              <Navbar.Toggle aria-controls="basic-navbar-nav"/>
              <Navbar.Collapse id="basic-navbar-nav">
                  <Nav className="mr-auto">

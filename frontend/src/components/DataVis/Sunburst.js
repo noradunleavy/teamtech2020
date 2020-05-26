@@ -86,16 +86,16 @@ class Sunburst extends React.Component {
     static defaultProps = {
         tooltip: true,
         tooltipFunc: (data) => data.name,
-        radianCutoff: .001,
-        transitionDuration: 500,
+        radianCutoff: .0001,
+        transitionDuration: 300,
         colorFunc: (node, current_color) => current_color,
         key_member: 'key',
-        font_size: 9,
+        font_size: 11,
         tooltipX: 20,
         tooltipY: 20,
         saturation: .5,
         lightness: .5,
-        child_brightness: 1,
+        child_brightness: .9,
         _debug: false,
         _log: console.log,
         _warn: console.warn,
@@ -131,7 +131,7 @@ class Sunburst extends React.Component {
     }
 
     componentDidMount() {
-        this.props._debug && this.props._log("Sunburst: componentDidMount()")
+        this.props._debug && this.props._log("Sunburst: componentDidMount()", this.props)
         this._create();
     }
 
@@ -194,7 +194,6 @@ class Sunburst extends React.Component {
     _create() {
         this.props._debug && this.props._log("Sunburst: _create()")
         if (!this.props.data) return;
-
         const root = d3Hierarchy(this.props.data)
             .sum(function(d) { 
                 if (d[this.props.count_member] === undefined)

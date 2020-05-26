@@ -12,9 +12,8 @@
 }
 .react-datetimerange-picker--enabled
 {
-    border: thin solid #575d66;
     background-color:#575c66;
-    width: 37%;
+    width: 33%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -28,5 +27,10 @@
 
 .data-vis-page {
     background-color: #282c34;
-    height: auto;
+    min-height: 100vh;
+    height: 100%;
+}
+
+.error-message {
+    color: white;
 }
