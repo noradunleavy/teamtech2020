@@ -1,9 +1,5 @@
 import React from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
-import UserForm from './UUIDForm';
-import UUID from './UUID.js';
-
-
 
  export const NavigationBar = () => (
          <Navbar bg="dark" variant="dark">
@@ -15,8 +11,6 @@ import UUID from './UUID.js';
                      <Nav.Item><Nav.Link href="/settings">Settings</Nav.Link>
                      </Nav.Item>
                  </Nav>
-                 <UUID/>
-                 <UserForm />
              </Navbar.Collapse>
          </Navbar>
  );

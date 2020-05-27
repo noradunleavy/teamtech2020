@@ -4,6 +4,7 @@ import './datavis.css';
 import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
 import Button from 'react-bootstrap/Button';
 import { UserContext } from "../UserContext.js";
+import UserForm from '../UUIDForm';
 
 import API from '../../api';
 
@@ -49,10 +50,7 @@ export default class DataVisualization extends Component {
     let start = Math.floor(date[0].getTime() / 1000)
     let end = Math.floor(date[1].getTime() / 1000)
     
-    // let new_sunburst_data = await this.getSunburstData(1512468142, 1512512500); // Test for entries that are actually in the db
     let new_sunburst_data = await this.getSunburstData(start, end);
-
-
     this.setState((prevState) => ({
       date,
       sunburstData: new_sunburst_data !== "No matches" ? new_sunburst_data : prevState.defaultSunburstData,
@@ -79,6 +77,7 @@ export default class DataVisualization extends Component {
   render() {
     return (
       <div className="data-vis-page">
+        <UserForm />
         <DateTimeRangePicker
           onChange={this.onChangeDateTime}
           value={this.state.date}
