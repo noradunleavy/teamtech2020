@@ -6,7 +6,7 @@ from flask_cors import CORS
 from mongo_connection import MongoConnection
 
 USER = 'frontend'
-SECRET = 'CkpirEmiJ75eUoRm'
+SECRET = ''
 URI = f'mongodb+srv://{USER}:{SECRET}@cluster0-wn7hw.azure.mongodb.net/?retryWrites=true&w=majority'
 
 app = Flask(__name__)

@@ -77,6 +77,7 @@ export default class DataVisualization extends Component {
   render() {
     return (
       <div className="data-vis-page">
+        <br/>
         <UserForm />
         <DateTimeRangePicker
           onChange={this.onChangeDateTime}
