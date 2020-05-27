@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom';
 import DataVisualization from './components/DataVis/datavis.js';
 import {Settings} from './components/settings.js';

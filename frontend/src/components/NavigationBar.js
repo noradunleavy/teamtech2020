@@ -1,5 +1,10 @@
 import React from 'react';
- import { Nav, Navbar, Form, FormControl, Button } from 'react-bootstrap';
+import { Nav, Navbar } from 'react-bootstrap';
+import UserForm from './UUIDForm';
+import UUID from './UUID.js';
+
+
+
  export const NavigationBar = () => (
          <Navbar bg="dark" variant="dark">
              <Navbar.Brand href="/">SWE Illinois Team Tech x Cisco</Navbar.Brand>
@@ -10,10 +15,8 @@ import React from 'react';
                      <Nav.Item><Nav.Link href="/settings">Settings</Nav.Link>
                      </Nav.Item>
                  </Nav>
-                 <Form inline>
-                     <FormControl type="text" placeholder="Application" className="mr-sm-2" />
-                     <Button variant="outline-info">Search</Button>
-                 </Form>
+                 <UUID/>
+                 <UserForm />
              </Navbar.Collapse>
          </Navbar>
  );

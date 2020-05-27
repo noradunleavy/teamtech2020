@@ -12,9 +12,6 @@ export const Settings = () => (
                 <Container >
                     <Row>
                         <Container>
-                            <Col >
-                            <h> Login Settings </h>
-                            </Col >
                             <br />
                             <Col >
                               <Row>
