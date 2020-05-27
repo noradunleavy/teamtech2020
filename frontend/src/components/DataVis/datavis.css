@@ -12,18 +12,21 @@
 }
 .react-datetimerange-picker--enabled
 {
-    background-color:#575c66;
-    width: 33%;
+    
+    width: 45%;
     display: flex;
     justify-content: center;
     align-items: center;
+  
 }
 .react-datetimerange-picker__wrapper
 {
     background-color: #575c66;
     border: thin solid #575c66;
+    overflow: hidden;
 
 }
+
 
 .data-vis-page {
     background-color: #282c34;
@@ -34,3 +37,4 @@
 .error-message {
     color: white;
 }
+
