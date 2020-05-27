@@ -71,7 +71,7 @@ export default class DataVisualization extends Component {
     height="900"           
     count_member="size"
     labelFunc={(node)=>node.data.name}
-    _debug={true}
+    _debug={false}
   />
 
   render() {
@@ -85,7 +85,7 @@ export default class DataVisualization extends Component {
           clearIcon = {null}
         />
         <Button onClick={this.toggleSunburst}>View</Button>
-        { this.state.showErrorMessage && this.state.showSunburst && <p className="error-message">No entries found for this range. Showing all entries.</p> }
+        { this.state.showErrorMessage && this.state.showSunburst && <p className="error-message">No matches found for this range. Showing all entries.</p> }
         { this.state.showSunburst && this.displaySunburst() }
       </div>
     );

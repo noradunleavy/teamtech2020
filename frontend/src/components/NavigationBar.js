@@ -8,8 +8,6 @@ import { Nav, Navbar } from 'react-bootstrap';
              <Navbar.Collapse id="basic-navbar-nav">
                  <Nav className="mr-auto">
                      <Nav.Item><Nav.Link href="/">Data Visualization</Nav.Link></Nav.Item>
-                     <Nav.Item><Nav.Link href="/settings">Settings</Nav.Link>
-                     </Nav.Item>
                  </Nav>
              </Navbar.Collapse>
          </Navbar>
