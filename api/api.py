@@ -59,8 +59,9 @@ def get_anomalies(uuid):
     Returns single document containing matching uuid and list of anomalies with
     keys for Timestamp, Category, and Type. If query results are empty, returns
     'No matches'.
-    Takes optional query parameters start and end. If none are given, results
-    between 0 and the current time are returned.
+    Takes optional query parameters start and end as UNIX timestamps to limit
+    query range. If no timestamps are given, results between timestamp 0 and
+    the current time are returned.
     Example: /anomalies/5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe?start=1512468142&end=1512500000
     """
     # Get query arguments
