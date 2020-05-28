@@ -92,8 +92,16 @@ def get_sunburst_data():
     pipeline = get_sunburst_pipeline(uuid, start_timestamp, end_timestamp)
     mongo_cursor = mongo_db['samples'].aggregate(pipeline)
     response_lst = list(mongo_cursor)
+
     if response_lst:
-        return response_lst[0]
+        response = response_lst[0]
+
+        # Replace null category with name UNCATEGORIZED
+        for category in response['children']:
+            if not category['name']:
+                category['name'] = 'UNCATEGORIZED'
+
+        return response
     else:
         return 'No matches'
 
