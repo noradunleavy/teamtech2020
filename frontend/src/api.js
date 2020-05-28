@@ -41,13 +41,13 @@ class API {
 
         endpoints.getAllSamples = () => axios.get(`${resourceURL}/samples`)
 
-        endpoints.getOneUser = ({ uuid } ) =>  axios.get(`${resourceURL}/samples/${uuid}`)
+        endpoints.getOneUser = ({ uuid }) =>  axios.get(`${resourceURL}/samples/${uuid}`)
 
-        endpoints.getOneProcess = ({ processName } ) =>  axios.get(`${resourceURL}/categories/${processName}`)
+        endpoints.getOneProcess = ({ processName }) =>  axios.get(`${resourceURL}/categories/${processName}`)
 
-        endpoints.sunburstData = function ({ uuid}, {start_timestamp}, {end_timestamp}) { 
-            var urll = `${resourceURL}/sunburst/?uuid=${uuid}`;
-            
+        endpoints.sunburstData = function ({ uuid }, { start_timestamp }, { end_timestamp }) {
+            var urll = `${resourceURL}/sunburst-data/${uuid}?`;
+
             if (start_timestamp !== undefined) {
                 urll = urll + `&start=${start_timestamp}`
             }

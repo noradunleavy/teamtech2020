@@ -76,15 +76,17 @@ def get_anomalies(uuid):
     else:
         return 'No matches'
 
-@app.route('/sunburst/')
-def get_sunburst_data():
+@app.route('/sunburst-data/<uuid>')
+def get_sunburst_data(uuid):
     """
-    Expects query parameters uuid, start (optional), and end (optional)
-    Example: /sunburst/?uuid=5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe&start=1512468142&end=1512512500
-    Returns dictionary of sunburst content. If query results are empty, returns 'No matches'
+    Returns a single document of sunburst content for a given uuid. If query
+    results are empty, returns 'No matches'.
+    Takes optional query parameters start and end as UNIX timestamps to limit
+    query range. If no timestamps are given, results between timestamp 0 and
+    the current time are returned.
+    Example: /sunburst-data/uuid=5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe?start=1512468142&end=1512512500
     """
     # Get query arguments
-    uuid = request.args.get('uuid')
     start_timestamp = request.args.get('start')
     end_timestamp = request.args.get('end')
 
