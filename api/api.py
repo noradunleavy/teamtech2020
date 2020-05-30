@@ -84,7 +84,7 @@ def get_sunburst_data(uuid):
     Takes optional query parameters start and end as UNIX timestamps to limit
     query range. If no timestamps are given, results between timestamp 0 and
     the current time are returned.
-    Example: /sunburst-data/uuid=5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe?start=1512468142&end=1512512500
+    Example: /sunburst-data/5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe?start=1512468142&end=1512512500
     """
     # Get query arguments
     start_timestamp = request.args.get('start')
