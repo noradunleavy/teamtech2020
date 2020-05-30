@@ -8,19 +8,27 @@ Author(s):  Samantha Walter <sjw2@illinois.edu>
             Niharika Dangarwala <ndanga2@illinois.edu>
 """
 
-from time import time
 from datetime import datetime
+from os import getenv
+from time import time
 
+from dotenv import load_dotenv
 from flask import Flask, request
 from flask_cors import CORS
 from pymongo import MongoClient
 
+# Get MongoDB credentials
+load_dotenv()
+USER = "frontend"
+SECRET = getenv(f"{USER.upper()}_SECRET")
+if not SECRET:
+    raise SystemExit(f"ERROR: Unable to retrieve MongoDB secret for user {USER}")
+CONNECTION_STRING = f"mongodb+srv://{USER}:{SECRET}@cluster0-wn7hw.azure.mongodb.net/?retryWrites=true&w=majority"
 
-USER = 'frontend'
-SECRET = ''
-URI = f'mongodb+srv://{USER}:{SECRET}@cluster0-wn7hw.azure.mongodb.net/?retryWrites=true&w=majority'
-mongo_db = MongoClient(URI)['carat']
+# Connect to MongoDB
+mongo_db = MongoClient(CONNECTION_STRING)['carat']
 
+# Start Flask app
 app = Flask(__name__)
 CORS(app)
 

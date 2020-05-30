@@ -10,16 +10,20 @@ Author(s):  Samantha Walter <sjw2@illinois.edu>
 """
 
 # from pprint import pprint
+from os import getenv
 
 import numpy as np
+from dotenv import load_dotenv
 from pandas import DataFrame, Timestamp
 from pymongo import MongoClient
 
-
+# Get MongoDB credentials
+load_dotenv()
 USER = "algo_out"
-PWD = ""
-CONNECTION_STRING = f"mongodb+srv://{USER}:{PWD}@cluster0-wn7hw.azure.mongodb.net/test?retryWrites=true&w=majority"
-
+SECRET = getenv(f"{USER.upper()}_SECRET")
+if not SECRET:
+    raise SystemExit(f"ERROR: Unable to retrieve MongoDB secret for user {USER}")
+CONNECTION_STRING = f"mongodb+srv://{USER}:{SECRET}@cluster0-wn7hw.azure.mongodb.net/?retryWrites=true&w=majority"
 
 def get_dummy_dataframe(uuid):
     """ Returns sample output dataframe from ML algorithm for testing """
@@ -59,5 +63,8 @@ def save_anomalies_to_mongo(uuid, output_df):
 if __name__ == "__main__":
     uuid = "5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe"
     output_df = get_dummy_dataframe(uuid)
-    save_anomalies_to_mongo(uuid, output_df)
-    # get_anomalies(uuid, output_df)
+
+    # save_anomalies_to_mongo(uuid, output_df)
+
+    anom_dict = get_anomalies(uuid, output_df)
+    print(anom_dict)
