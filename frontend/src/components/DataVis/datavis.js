@@ -45,24 +45,28 @@ export default class DataVisualization extends Component {
     })
   }
 
-  onChangeDateTime = async(date) => {
+  onChangeDateTime = async(selectedDate) => {
     // Convert date into start and end unix timestamps
-    let start = Math.floor(date[0].getTime() / 1000)
-    let end = Math.floor(date[1].getTime() / 1000)
-    
-    let new_sunburst_data = await this.getSunburstData(start, end);
-    this.setState((prevState) => ({
-      date,
-      sunburstData: new_sunburst_data !== "No matches" ? new_sunburst_data : prevState.defaultSunburstData,
+    let start = Math.floor(selectedDate[0].getTime() / 1000)
+    let end = Math.floor(selectedDate[1].getTime() / 1000)
+
+    this.setState({
+      date: selectedDate,
       showSunburst: false,
-      showErrorMessage: new_sunburst_data == "No matches" ? true : false,
-    }))
+      startTimestamp: start,
+      endTimestamp: end,
+    })
   }
 
-  toggleSunburst = () => {
-    this.setState({
+  async toggleSunburst() {
+    // GET the new sunburst data
+    let new_sunburst_data = await this.getSunburstData(this.state.startTimestamp, this.state.endTimestamp);
+
+    this.setState((prevState) => ({
       showSunburst: true,
-    })
+      sunburstData: new_sunburst_data !== "No matches" ? new_sunburst_data : prevState.defaultSunburstData,
+      showErrorMessage: new_sunburst_data == "No matches" ? true : false,
+    }));
   }
 
   displaySunburst = () => <Sunburst
@@ -85,7 +89,7 @@ export default class DataVisualization extends Component {
           maxDetail = "second"
           clearIcon = {null}
         />
-        <Button onClick={this.toggleSunburst}>View</Button>
+        <Button onClick={this.toggleSunburst.bind(this)}>View</Button>
         { this.state.showErrorMessage && this.state.showSunburst && <p className="error-message">No matches found for this range. Showing all entries.</p> }
         { this.state.showSunburst && this.displaySunburst() }
       </div>
