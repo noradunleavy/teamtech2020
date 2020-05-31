@@ -59,6 +59,20 @@ class API {
             return response
         }
 
+        endpoints.anomalyData = function ({ uuid }, { start_timestamp }, { end_timestamp }) {
+            var urll = `${resourceURL}/anomalies/${uuid}?`;
+
+            if (start_timestamp !== undefined) {
+                urll = urll + `&start=${start_timestamp}`
+            }
+            if (end_timestamp !== undefined) {
+                urll = urll + `&end=${end_timestamp}`
+            }
+
+            const response = axios.get(urll)
+            return response
+        }
+
         return endpoints
 
     }
