@@ -36,8 +36,17 @@ CORS(app)
 def hello_world():
     return 'Hello, World!'
 
+@app.route('/categories', methods=['GET'])
+def get_categories():
+    """ Returns enumerated dict of all distinct categories """
+    response = {}
+    for num,doc in enumerate(mongo_db['categories'].distinct('categoryName')):
+        response[num] = doc
+    return response
+
 @app.route('/categories/<processName>', methods=['GET'])
-def get_one_category(processName):
+def get_category(processName):
+    """ Returns dict with keys processName and categoryName or 'No matches' """
     response = mongo_db['categories'].find_one({'processName': processName}, {'_id':0})
     if response:
         return response
@@ -55,6 +64,7 @@ def get_all_samples():
 
 @app.route('/samples/<uuid>', methods=['GET'])
 def get_one_sample(uuid):
+    """ Returns dict of sample or 'No matches' """
     response = mongo_db['samples'].find_one({'uuid': uuid}, {'_id':0})
     if response:
         return response
