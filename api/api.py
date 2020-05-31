@@ -61,6 +61,24 @@ def get_one_sample(uuid):
     else:
         return 'No matches'
 
+@app.route('/users', methods=['GET'])
+def get_users():
+    """ Returns enumerated dict of all distinct usernames """
+    response = {}
+    for num,doc in enumerate(mongo_db['users'].distinct('username')):
+        response[num] = doc
+    return response
+
+@app.route('/users/<username>', methods=['GET'])
+def get_uuid(username):
+    """ Return dict with keys username and uuid or 'No matches' """
+    response = mongo_db['users'].find_one({'username': username}, {'_id':0})
+    if response:
+        return response
+    else:
+        return 'No matches'
+    return
+
 @app.route('/anomalies/<uuid>')
 def get_anomalies(uuid):
     """
