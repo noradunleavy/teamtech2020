@@ -11,15 +11,20 @@ Author(s):  Samantha Walter <sjw2@illinois.edu>
 """
 
 from collections import Counter, OrderedDict
+from os import getenv
 from pprint import pprint
 
+from dotenv import load_dotenv
 from pandas import DataFrame, Timestamp
 from pymongo import MongoClient
 
-
+# Get MongoDB credentials
+load_dotenv()
 USER = "read"
-PWD = ""
-CONNECTION_STRING = f"mongodb+srv://{USER}:{PWD}@cluster0-wn7hw.azure.mongodb.net/test?retryWrites=true&w=majority"
+SECRET = getenv(f"{USER.upper()}_SECRET")
+if not SECRET:
+    raise SystemExit(f"ERROR: Unable to retrieve MongoDB secret for user {USER}")
+CONNECTION_STRING = f"mongodb+srv://{USER}:{SECRET}@cluster0-wn7hw.azure.mongodb.net/?retryWrites=true&w=majority"
 
 PRIORITY_MAPPING = {
     "Perceptible task": 1,

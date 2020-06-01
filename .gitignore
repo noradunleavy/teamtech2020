@@ -25,3 +25,6 @@ yarn-error.log*
 # Python
 __pycache__/
 **/*.py[cod]
+
+# Secrets
+**/.env
