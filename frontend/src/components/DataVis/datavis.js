@@ -1,4 +1,4 @@
-import React, {Component, useContext} from 'react';
+import React, {Component} from 'react';
 import Sunburst from './Sunburst';
 import ReactVirtualizedTable from './Anomalies';
 import './datavis.css';
@@ -6,7 +6,6 @@ import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
 import Button from 'react-bootstrap/Button';
 import { UserContext } from "../UserContext.js";
 import UserForm from '../UUIDForm';
-// import { AnomalyButton } from '@material-ui/core';
 
 import API from '../../api';
 
@@ -30,7 +29,8 @@ export default class DataVisualization extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      date: [new Date(), new Date()],
+      date: [null, null],
+      defaultDate: [new Date('December 1, 2017 00:00:00'), new Date('December 31, 2017 00:00:00')],
       startTimestamp: undefined,
       endTimestamp: undefined,
       sunburstData: null,
@@ -107,12 +107,7 @@ export default class DataVisualization extends Component {
   />
 
   async toggleAnomalies() {
-    console.log('here');
-
     let new_anomaly_data = await this.getAnomalyData(this.state.startTimestamp, this.state.endTimestamp);
-
-    console.log(new_anomaly_data);
-
     this.setState({showAnomalies: true, anomalyData: new_anomaly_data}, () => {
       setTimeout(() => {
         this.tableRef.current.scrollIntoView({behavior:"smooth"})
@@ -129,7 +124,7 @@ export default class DataVisualization extends Component {
       </div>
     )
   }
-  //value={this.state.date} made the default date the current date
+
   render() {
     return (
       <div className="data-vis-page">
@@ -137,7 +132,7 @@ export default class DataVisualization extends Component {
         <UserForm/>
         <div className="dateContainer" style = {styles.container}>
         <DateTimeRangePicker
-          value = {this.state.date}
+          value = {this.state.date[0] === null ? this.state.defaultDate : this.state.date}
           onChange={this.onChangeDateTime}
           maxDetail = "second"
           clearIcon = {null}
