@@ -1,4 +1,4 @@
-import React, {Component, useContext} from 'react';
+import React, {Component} from 'react';
 import Sunburst from './Sunburst';
 import ReactVirtualizedTable from './Anomalies';
 import './datavis.css';
@@ -6,7 +6,6 @@ import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
 import Button from 'react-bootstrap/Button';
 import { UserContext } from "../UserContext.js";
 import UserForm from '../UUIDForm';
-// import { AnomalyButton } from '@material-ui/core';
 
 import API from '../../api';
 
@@ -30,7 +29,8 @@ export default class DataVisualization extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      date: [new Date(), new Date()],
+      date: [null, null],
+      defaultDate: [new Date('December 1, 2017 00:00:00'), new Date('December 31, 2017 00:00:00')],
       startTimestamp: undefined,
       endTimestamp: undefined,
       sunburstData: null,
@@ -107,12 +107,7 @@ export default class DataVisualization extends Component {
   />
 
   async toggleAnomalies() {
-    console.log('here');
-
     let new_anomaly_data = await this.getAnomalyData(this.state.startTimestamp, this.state.endTimestamp);
-
-    console.log(new_anomaly_data);
-
     this.setState({showAnomalies: true, anomalyData: new_anomaly_data}, () => {
       setTimeout(() => {
         this.tableRef.current.scrollIntoView({behavior:"smooth"})
@@ -134,16 +129,26 @@ export default class DataVisualization extends Component {
     return (
       <div className="data-vis-page">
         <br/>
-        <UserForm />
+        <UserForm/>
+        <div className="dateContainer" style = {styles.container}>
         <DateTimeRangePicker
+          value = {this.state.date[0] === null ? this.state.defaultDate : this.state.date}
           onChange={this.onChangeDateTime}
-          value={this.state.date}
           maxDetail = "second"
           clearIcon = {null}
         />
-        <Button onClick={this.toggleSunburst.bind(this)}>View</Button>
+        </div>
+        <div className="viewContainer" style={styles.container}>
+        <Button className="view_button" justify="center"
+        onClick={this.toggleSunburst.bind(this)}>
+        View
+        </Button>
+        </div> 
+        <div className="errorContainer" style={styles.container}>
         { this.state.showErrorMessage && this.state.showSunburst && <p className="error-message">No matches found for this range. Showing all entries.</p> }
+        </div>
         { this.state.showSunburst && this.displaySunburst() }
+       
 
         <div className="container" style={styles.container}>
           <Button className="anomaly_button" justify="center"
