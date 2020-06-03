@@ -73,6 +73,13 @@ class API {
             return response
         }
 
+        endpoints.username = function ({ username }) {
+            var urll = `${resourceURL}/users/${username}?`;
+
+            const response = axios.get(urll)
+            return response
+        }
+
         return endpoints
 
     }

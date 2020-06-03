@@ -39,11 +39,10 @@ export default class DataVisualization extends Component {
       showAnomalies: false,
       anomalyData: null,
       showErrorMessage: false,
+      uuid: null,
     };
     this.tableRef = React.createRef();
   }
-
-  // 5ebd070c717f9c1ca90906f41543437a30514f86546931a8acf85f38bf78edbe
 
   getSunburstData = async(start, end) => {
     let data = null
@@ -125,11 +124,36 @@ export default class DataVisualization extends Component {
     )
   }
 
+  handleInputChange = async(input) => {
+    let result = null
+    const myAPI = new API({url: 'https://teamtech2020.herokuapp.com'})
+    myAPI.createEntity({ name: 'get'})
+    await myAPI.endpoints.get.username({username: input})
+      .then(response => result = response.data);
+    
+    if(result !== "No matches") {
+      this.setState({
+        uuid: result["uuid"],
+        showSunburst: false,
+      })
+    } else {
+      this.setState({
+        uuid: null,
+        showSunburst: false,
+      })
+    }
+  }
+
   render() {
     return (
       <div className="data-vis-page">
         <br/>
-        <UserForm/>
+        {/* <UserForm/> */}
+        <div className="form-group">
+          <span className = "uuid-prompt">Username:</span>
+          <input class="form-field" type="text" placeholder="Please input your username" onChange={e => this.handleInputChange(e.target.value)}/>
+          {this.state.uuid === null ? <p className="error-message">No user found.</p> : null}
+        </div>
         <div className="dateContainer" style = {styles.container}>
         <DateTimeRangePicker
           value = {this.state.date[0] === null ? this.state.defaultDate : this.state.date}
@@ -141,7 +165,7 @@ export default class DataVisualization extends Component {
         <div className="viewContainer" style={styles.container}>
         <Button className="view_button" justify="center"
         onClick={this.toggleSunburst.bind(this)}>
-        View
+        View Sunburst
         </Button>
         </div> 
         <div className="errorContainer" style={styles.container}>
@@ -153,7 +177,7 @@ export default class DataVisualization extends Component {
         <div className="container" style={styles.container}>
           <Button className="anomaly_button" justify="center"
             onClick = {this.toggleAnomalies.bind(this)}>
-            Anomalies
+            View Anomalies
           </Button>
         </div> 
         {this.displayAnomalies()}
