@@ -48,7 +48,8 @@ export default class DataVisualization extends Component {
     let data = null
     const myAPI = new API({url: 'https://teamtech2020.herokuapp.com'})
     myAPI.createEntity({ name: 'get'})
-    await myAPI.endpoints.get.sunburstData({uuid: this.context.uuid}, {start_timestamp: start}, {end_timestamp: end})
+    console.log(this.state.uuid);
+    await myAPI.endpoints.get.sunburstData({uuid: this.state.uuid}, {start_timestamp: start}, {end_timestamp: end})
       .then(response => data = response.data);
     
     return JSON.parse(JSON.stringify(data));
@@ -58,7 +59,7 @@ export default class DataVisualization extends Component {
     let anomalyData = null
     const myAPI = new API({url: 'https://teamtech2020.herokuapp.com'})
     myAPI.createEntity({ name: 'get'})
-    await myAPI.endpoints.get.anomalyData({uuid: this.context.uuid}, {start_timestamp: start}, {end_timestamp: end})
+    await myAPI.endpoints.get.anomalyData({uuid: this.state.uuid}, {start_timestamp: start}, {end_timestamp: end})
       .then(response => anomalyData = response.data);
       
     return JSON.parse(JSON.stringify(anomalyData));
