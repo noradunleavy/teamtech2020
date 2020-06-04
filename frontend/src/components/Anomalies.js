@@ -161,7 +161,7 @@ export default function ReactVirtualizedTable(props) {
     });
   }
   return (
-    <Paper style={{ height: 400, width: '60%', margin: 'auto', marginTop: 30, fontFamily: 'Roboto', backgroundColor: '#b19cd9'}}>
+    <Paper style={{ height: 400, width: '60%', margin: 'auto', marginTop: 30, fontFamily: 'Roboto', backgroundColor: '#EEF4FF'}}>
       <VirtualizedTable
         rowCount={rows.length}
         rowGetter={({ index }) => rows[index]}

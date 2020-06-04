@@ -8,10 +8,12 @@ export default class App extends React.Component {
         return (
             <React.Fragment>
                 <Router>
-                    <NavigationBar />
-                    <Switch>
-                        <Route exact path="/" component={DataVisualization} />
-                    </Switch>
+                    <div className="App">
+                        <NavigationBar />
+                        <Switch>
+                            <Route exact path="/" component={DataVisualization} />
+                        </Switch>
+                    </div>
                 </Router>
             </React.Fragment>
         );

@@ -9,7 +9,7 @@ class ErrorModal extends Component {
                     <Modal.Title>{this.props.errorText}</Modal.Title>
                 </Modal.Header>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={this.props.handleModalClose}>
+                <Button className="view_button" onClick={this.props.handleModalClose}>
                     Close
                 </Button>
                 </Modal.Footer>

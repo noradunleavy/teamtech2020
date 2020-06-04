@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Sunburst from './Sunburst';
 import ReactVirtualizedTable from '../Anomalies';
-import './datavis.css';
+import './datavis.scss';
 import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
 import Button from 'react-bootstrap/Button';
 import ErrorModal from '../error';
@@ -154,6 +154,7 @@ export default class DataVisualization extends Component {
       this.setState({
         uuid: result["uuid"],
         showSunburst: false,
+        showAnomalies: false,
         defaultSunburstData,
         defaultAnomalyData,
       })
@@ -162,6 +163,7 @@ export default class DataVisualization extends Component {
         showErrorModal: true,
         errorText: "No user found.",
         showSunburst: false,
+        showAnomalies: false,
         defaultSunburstData,
         defaultAnomalyData,
       })
@@ -173,9 +175,11 @@ export default class DataVisualization extends Component {
       <div className="data-vis-page">
         <br/>
 
-        <div className="form-group">
-          <span className = "uuid-prompt">Username:</span>
-          <input class="form-field" type="text" placeholder="Please input your username" onChange={e => this.handleInputChange(e.target.value)}/>
+        <div className="username-wrapper">
+          <div className="form-group">
+            <span className = "uuid-prompt">Username:</span>
+            <input class="form-field" type="text" placeholder="Please input your username" onChange={e => this.handleInputChange(e.target.value)}/>
+          </div>
           <Button className="view_button" onClick={this.getUUID.bind(this)}>Submit</Button>
         </div>
 
