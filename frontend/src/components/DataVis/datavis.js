@@ -1,17 +1,14 @@
 import React, {Component} from 'react';
 import Sunburst from './Sunburst';
-import ReactVirtualizedTable from './Anomalies';
+import ReactVirtualizedTable from '../Anomalies';
 import './datavis.css';
 import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
 import Button from 'react-bootstrap/Button';
-import { UserContext } from "../UserContext.js";
-import UserForm from '../UUIDForm';
+import ErrorModal from '../error';
 
 import API from '../../api';
 
-const flaskApiUrl = {
-  url: 'https://teamtech2020.herokuapp.com'
-};
+const flaskApiUrl = "https://teamtech2020.herokuapp.com";
 
 const styles = {
   container: {
@@ -23,14 +20,11 @@ const styles = {
 };
 
 export default class DataVisualization extends Component {
-
-  static contextType = UserContext;
-
   constructor(props) {
     super(props);
     this.state = {
       date: [null, null],
-      defaultDate: [new Date('December 1, 2017 00:00:00'), new Date('December 31, 2017 00:00:00')],
+      defaultDate: [new Date('December 1, 2017 00:0:00'), new Date('December 31, 2017 00:00:00')],
       startTimestamp: undefined,
       endTimestamp: undefined,
       sunburstData: null,
@@ -38,39 +32,38 @@ export default class DataVisualization extends Component {
       showSunburst: false,
       showAnomalies: false,
       anomalyData: null,
-      showErrorMessage: false,
+      defaultAnomalyData: null,
+      usernameInput: "",
       uuid: null,
+      showErrorModal: false,
+      errorText: "",
     };
     this.tableRef = React.createRef();
   }
 
-  getSunburstData = async(start, end) => {
+  handleModalClose = () => {
+    this.setState({
+      showErrorModal: false,
+    })
+  }
+
+  getSunburstData = async(start, end, uuid) => {
     let data = null
-    const myAPI = new API({url: 'https://teamtech2020.herokuapp.com'})
+    const myAPI = new API({url: flaskApiUrl})
     myAPI.createEntity({ name: 'get'})
-    console.log(this.state.uuid);
-    await myAPI.endpoints.get.sunburstData({uuid: this.state.uuid}, {start_timestamp: start}, {end_timestamp: end})
+    await myAPI.endpoints.get.sunburstData({uuid: uuid}, {start_timestamp: start}, {end_timestamp: end})
       .then(response => data = response.data);
     
     return JSON.parse(JSON.stringify(data));
   }
 
-  getAnomalyData = async(start, end) => {
+  getAnomalyData = async(start, end, uuid) => {
     let anomalyData = null
-    const myAPI = new API({url: 'https://teamtech2020.herokuapp.com'})
+    const myAPI = new API({url: flaskApiUrl})
     myAPI.createEntity({ name: 'get'})
-    await myAPI.endpoints.get.anomalyData({uuid: this.state.uuid}, {start_timestamp: start}, {end_timestamp: end})
+    await myAPI.endpoints.get.anomalyData({uuid: uuid}, {start_timestamp: start}, {end_timestamp: end})
       .then(response => anomalyData = response.data);
-      
     return JSON.parse(JSON.stringify(anomalyData));
-  }
-
-  async componentDidMount() {
-    // Get default sunburst data 
-    let data = await this.getSunburstData(undefined, undefined);
-    this.setState({
-      defaultSunburstData: data,
-    })
   }
 
   onChangeDateTime = async(selectedDate) => {
@@ -81,6 +74,7 @@ export default class DataVisualization extends Component {
     this.setState({
       date: selectedDate,
       showSunburst: false,
+      showAnomalies: false,
       startTimestamp: start,
       endTimestamp: end,
     })
@@ -88,12 +82,13 @@ export default class DataVisualization extends Component {
 
   async toggleSunburst() {
     // GET the new sunburst data
-    let new_sunburst_data = await this.getSunburstData(this.state.startTimestamp, this.state.endTimestamp);
+    let new_sunburst_data = await this.getSunburstData(this.state.startTimestamp, this.state.endTimestamp, this.state.uuid);
 
     this.setState((prevState) => ({
       showSunburst: true,
       sunburstData: new_sunburst_data !== "No matches" ? new_sunburst_data : prevState.defaultSunburstData,
-      showErrorMessage: new_sunburst_data == "No matches" ? true : false,
+      showErrorModal: new_sunburst_data === "No matches" ? true : false,
+      errorText: new_sunburst_data === "No matches" ? "No matches found. Showing all entries." : "",
     }));
   }
 
@@ -104,11 +99,17 @@ export default class DataVisualization extends Component {
     count_member="size"
     labelFunc={(node)=>node.data.name}
     _debug={false}
-  />
+  />  
 
   async toggleAnomalies() {
-    let new_anomaly_data = await this.getAnomalyData(this.state.startTimestamp, this.state.endTimestamp);
-    this.setState({showAnomalies: true, anomalyData: new_anomaly_data}, () => {
+    let new_anomaly_data = await this.getAnomalyData(this.state.startTimestamp, this.state.endTimestamp, this.state.uuid);
+
+    this.setState({
+      showAnomalies: true, 
+      anomalyData: new_anomaly_data === "No matches" ? this.state.defaultAnomalyData : new_anomaly_data,
+      showErrorModal: new_anomaly_data === "No matches" ? true: false,
+      errorText: new_anomaly_data === "No matches" ? "No anomalies found. Showing all entries." : "",
+    }, () => {
       setTimeout(() => {
         this.tableRef.current.scrollIntoView({behavior:"smooth"})
       }, 100);
@@ -125,22 +126,44 @@ export default class DataVisualization extends Component {
     )
   }
 
-  handleInputChange = async(input) => {
+  handleInputChange = (input) => {
+    this.setState({
+      usernameInput: input,
+    })
+  }
+
+  async getUUID() {
+    // GET corresponding uuid from inputted username
     let result = null
-    const myAPI = new API({url: 'https://teamtech2020.herokuapp.com'})
+    const myAPI = new API({url: flaskApiUrl})
     myAPI.createEntity({ name: 'get'})
-    await myAPI.endpoints.get.username({username: input})
+    await myAPI.endpoints.get.username({username: this.state.usernameInput})
       .then(response => result = response.data);
     
+    let defaultSunburstData = null;
+    let defaultAnomalyData = null;
+    if (result !== "No matches") {
+      // GET default sunburst data 
+      defaultSunburstData = await this.getSunburstData(undefined, undefined, result["uuid"]);
+      // GET default anomaly data
+      defaultAnomalyData = await this.getAnomalyData(undefined, undefined, result["uuid"]);
+    }
+
+    // Check if username was found. If not, display error modal.
     if(result !== "No matches") {
       this.setState({
         uuid: result["uuid"],
         showSunburst: false,
+        defaultSunburstData,
+        defaultAnomalyData,
       })
     } else {
       this.setState({
-        uuid: null,
+        showErrorModal: true,
+        errorText: "No user found.",
         showSunburst: false,
+        defaultSunburstData,
+        defaultAnomalyData,
       })
     }
   }
@@ -149,39 +172,32 @@ export default class DataVisualization extends Component {
     return (
       <div className="data-vis-page">
         <br/>
-        {/* <UserForm/> */}
+
         <div className="form-group">
           <span className = "uuid-prompt">Username:</span>
           <input class="form-field" type="text" placeholder="Please input your username" onChange={e => this.handleInputChange(e.target.value)}/>
-          {this.state.uuid === null ? <p className="error-message">No user found.</p> : null}
+          <Button className="view_button" onClick={this.getUUID.bind(this)}>Submit</Button>
         </div>
-        <div className="dateContainer" style = {styles.container}>
-        <DateTimeRangePicker
-          value = {this.state.date[0] === null ? this.state.defaultDate : this.state.date}
-          onChange={this.onChangeDateTime}
-          maxDetail = "second"
-          clearIcon = {null}
-        />
-        </div>
-        <div className="viewContainer" style={styles.container}>
-        <Button className="view_button" justify="center"
-        onClick={this.toggleSunburst.bind(this)}>
-        View Sunburst
-        </Button>
-        </div> 
-        <div className="errorContainer" style={styles.container}>
-        { this.state.showErrorMessage && this.state.showSunburst && <p className="error-message">No matches found for this range. Showing all entries.</p> }
-        </div>
-        { this.state.showSunburst && this.displaySunburst() }
-       
 
-        <div className="container" style={styles.container}>
-          <Button className="anomaly_button" justify="center"
-            onClick = {this.toggleAnomalies.bind(this)}>
+        {this.state.uuid === null ? null : <div className="datavis-options-container">
+          <DateTimeRangePicker
+            value = {this.state.date[0] === null ? this.state.defaultDate : this.state.date}
+            onChange={this.onChangeDateTime}
+            maxDetail = "second"
+            clearIcon = {null}
+          />
+          <Button className="view_button" justify="center" onClick={this.toggleSunburst.bind(this)}>
+            View Sunburst
+          </Button>
+          <Button className="view_button" justify="center" onClick = {this.toggleAnomalies.bind(this)}>
             View Anomalies
           </Button>
-        </div> 
+        </div>}
+
+        {this.state.showSunburst && this.displaySunburst()}
         {this.displayAnomalies()}
+
+        <ErrorModal showErrorModal={this.state.showErrorModal} errorText={this.state.errorText} handleModalClose={this.handleModalClose} />
       </div>
     );
   }
