@@ -166,6 +166,7 @@ export default class DataVisualization extends Component {
         showAnomalies: false,
         defaultSunburstData,
         defaultAnomalyData,
+        uuid: null,
       })
     }
   }
