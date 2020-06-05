@@ -192,7 +192,7 @@ export default class DataVisualization extends Component {
             clearIcon = {null}
           />
           <Button className="view_button" justify="center" onClick={this.toggleSunburst.bind(this)}>
-            View Sunburst
+            View App Usage
           </Button>
           <Button className="view_button" justify="center" onClick = {this.toggleAnomalies.bind(this)}>
             View Anomalies
