@@ -151,7 +151,8 @@ const VirtualizedTable = withStyles(styles)(MuiVirtualizedTable);
 
 export default function ReactVirtualizedTable(props) {
   let rows = [];
-  if(props.data) {
+  if(props.data && props.data.anomalies) {
+    console.log(props.data)
     rows = props.data.anomalies.map((anomaly) => {
       let symbol = '▲';
       if (anomaly.Type === -1) {
