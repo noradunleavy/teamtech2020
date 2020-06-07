@@ -8,7 +8,7 @@ import ErrorModal from '../error';
 
 import API from '../../api';
 
-const flaskApiUrl = "https://teamtech2020.herokuapp.com";
+const flaskApiUrl = "https://teamtech2loca020.herokuapp.com";
 
 const styles = {
   container: {
@@ -37,6 +37,7 @@ export default class DataVisualization extends Component {
       uuid: null,
       showErrorModal: false,
       errorText: "",
+      token: '',
     };
     this.tableRef = React.createRef();
   }
@@ -47,21 +48,21 @@ export default class DataVisualization extends Component {
     })
   }
 
-  getSunburstData = async(start, end, uuid) => {
+  getSunburstData = async(start, end, uuid, token) => {
     let data = null
     const myAPI = new API({url: flaskApiUrl})
     myAPI.createEntity({ name: 'get'})
-    await myAPI.endpoints.get.sunburstData({uuid: uuid}, {start_timestamp: start}, {end_timestamp: end})
+    await myAPI.endpoints.get.sunburstData({uuid: uuid}, {start_timestamp: start}, {end_timestamp: end}, {token: token})
       .then(response => data = response.data);
     
     return JSON.parse(JSON.stringify(data));
   }
 
-  getAnomalyData = async(start, end, uuid) => {
+  getAnomalyData = async(start, end, uuid, token) => {
     let anomalyData = null
     const myAPI = new API({url: flaskApiUrl})
     myAPI.createEntity({ name: 'get'})
-    await myAPI.endpoints.get.anomalyData({uuid: uuid}, {start_timestamp: start}, {end_timestamp: end})
+    await myAPI.endpoints.get.anomalyData({uuid: uuid}, {start_timestamp: start}, {end_timestamp: end}, {token: token})
       .then(response => anomalyData = response.data);
     return JSON.parse(JSON.stringify(anomalyData));
   }
@@ -82,7 +83,7 @@ export default class DataVisualization extends Component {
 
   async toggleSunburst() {
     // GET the new sunburst data
-    let new_sunburst_data = await this.getSunburstData(this.state.startTimestamp, this.state.endTimestamp, this.state.uuid);
+    let new_sunburst_data = await this.getSunburstData(this.state.startTimestamp, this.state.endTimestamp, this.state.uuid, this.state.token);
 
     this.setState((prevState) => ({
       showSunburst: true,
@@ -102,7 +103,7 @@ export default class DataVisualization extends Component {
   />  
 
   async toggleAnomalies() {
-    let new_anomaly_data = await this.getAnomalyData(this.state.startTimestamp, this.state.endTimestamp, this.state.uuid);
+    let new_anomaly_data = await this.getAnomalyData(this.state.startTimestamp, this.state.endTimestamp, this.state.uuid, this.state.token);
 
     this.setState({
       showAnomalies: true, 
@@ -139,14 +140,15 @@ export default class DataVisualization extends Component {
     myAPI.createEntity({ name: 'get'})
     await myAPI.endpoints.get.username({username: this.state.usernameInput})
       .then(response => result = response.data);
-    
+    let token = result.token
+
     let defaultSunburstData = null;
     let defaultAnomalyData = null;
     if (result !== "No matches") {
       // GET default sunburst data 
-      defaultSunburstData = await this.getSunburstData(undefined, undefined, result["uuid"]);
+      defaultSunburstData = await this.getSunburstData(undefined, undefined, result["uuid"], token);
       // GET default anomaly data
-      defaultAnomalyData = await this.getAnomalyData(undefined, undefined, result["uuid"]);
+      defaultAnomalyData = await this.getAnomalyData(undefined, undefined, result["uuid"], token);
     }
 
     // Check if username was found. If not, display error modal.
@@ -157,6 +159,7 @@ export default class DataVisualization extends Component {
         showAnomalies: false,
         defaultSunburstData,
         defaultAnomalyData,
+        token,
       })
     } else {
       this.setState({

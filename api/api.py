@@ -8,7 +8,7 @@ Author(s):  Samantha Walter <sjw2@illinois.edu>
             Niharika Dangarwala <ndanga2@illinois.edu>
 """
 
-from datetime import datetime
+import datetime
 from os import getenv
 from time import time
 
@@ -17,9 +17,9 @@ from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from pymongo import MongoClient
 import jwt
-import datetime
 import functools
 from functools import wraps
+
 
 # Get MongoDB credentials
 load_dotenv()
@@ -186,8 +186,8 @@ def get_anomalies_pipeline(uuid, start_timestamp, end_timestamp):
         start_timestamp = 0
     if not end_timestamp:
         end_timestamp = time()
-    start_datetime = datetime.fromtimestamp(int(start_timestamp))
-    end_datetime = datetime.fromtimestamp(int(end_timestamp))
+    start_datetime = datetime.datetime.fromtimestamp(int(start_timestamp))
+    end_datetime = datetime.datetime.fromtimestamp(int(end_timestamp))
 
     # print(start_datetime, datetime.timestamp(start_datetime))
     # print(end_datetime, datetime.timestamp(end_datetime))
