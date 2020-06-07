@@ -8,7 +8,7 @@ import ErrorModal from '../error';
 
 import API from '../../api';
 
-const flaskApiUrl = "https://teamtech2loca020.herokuapp.com";
+const flaskApiUrl = "https://teamtech2020.herokuapp.com";
 
 const styles = {
   container: {
