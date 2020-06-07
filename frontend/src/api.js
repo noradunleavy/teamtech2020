@@ -39,14 +39,14 @@ class API {
         const resourceURL = `${this.url}`
 
 
-        endpoints.getAllSamples = () => axios.get(`${resourceURL}/samples`)
+        endpoints.getAllSamples = ({token}) => axios.get(`${resourceURL}/samples?token=${token}`)
 
-        endpoints.getOneUser = ({ uuid }) =>  axios.get(`${resourceURL}/samples/${uuid}`)
+        endpoints.getOneUser = ({ uuid }, {token}) =>  axios.get(`${resourceURL}/samples/${uuid}?token=${token}`)
 
-        endpoints.getOneProcess = ({ processName }) =>  axios.get(`${resourceURL}/categories/${processName}`)
+        endpoints.getOneProcess = ({ processName }, {token}) =>  axios.get(`${resourceURL}/categories/${processName}?token=${token}`)
 
-        endpoints.sunburstData = function ({ uuid }, { start_timestamp }, { end_timestamp }) {
-            var urll = `${resourceURL}/sunburst-data/${uuid}?`;
+        endpoints.sunburstData = function ({ uuid }, { start_timestamp }, { end_timestamp }, {token}) {
+            var urll = `${resourceURL}/sunburst-data/${uuid}?token=${token}`;
 
             if (start_timestamp !== undefined) {
                 urll = urll + `&start=${start_timestamp}`
@@ -59,8 +59,8 @@ class API {
             return response
         }
 
-        endpoints.anomalyData = function ({ uuid }, { start_timestamp }, { end_timestamp }) {
-            var urll = `${resourceURL}/anomalies/${uuid}?`;
+        endpoints.anomalyData = function ({ uuid }, { start_timestamp }, { end_timestamp }, {token}) {
+            var urll = `${resourceURL}/anomalies/${uuid}?token=${token}`;
 
             if (start_timestamp !== undefined) {
                 urll = urll + `&start=${start_timestamp}`

@@ -13,9 +13,13 @@ from os import getenv
 from time import time
 
 from dotenv import load_dotenv
-from flask import Flask, request
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 from pymongo import MongoClient
+import jwt
+import datetime
+import functools
+from functools import wraps
 
 # Get MongoDB credentials
 load_dotenv()
@@ -32,11 +36,31 @@ mongo_db = MongoClient(CONNECTION_STRING)['carat']
 app = Flask(__name__)
 CORS(app)
 
+app.config['SECRET_KEY'] = 'thisisthesecretkey'
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.args.get('token') #http://127.0.0.1:5000/route?token=
+
+        if not token:
+            return jsonify({'message' : 'Token is missing!'}), 403
+
+        try: 
+            data = jwt.decode(token, app.config['SECRET_KEY'])
+        except:
+            return jsonify({'message' : 'Token is invalid!'}), 403
+        return f(*args, **kwargs)
+    
+    return decorated
+
+
 @app.route('/', methods=['GET'])
 def hello_world():
     return 'Hello, World!'
 
 @app.route('/categories', methods=['GET'])
+@token_required
 def get_categories():
     """ Returns enumerated dict of all distinct categories """
     response = {}
@@ -45,6 +69,7 @@ def get_categories():
     return response
 
 @app.route('/categories/<processName>', methods=['GET'])
+@token_required
 def get_category(processName):
     """ Returns dict with keys processName and categoryName or 'No matches' """
     response = mongo_db['categories'].find_one({'processName': processName}, {'_id':0})
@@ -55,6 +80,7 @@ def get_category(processName):
     return
 
 @app.route('/samples', methods=['GET'])
+@token_required
 def get_all_samples():
     """ Returns enumerated dict of a limit of 5 documents """
     response = {}
@@ -63,6 +89,7 @@ def get_all_samples():
     return response
 
 @app.route('/samples/<uuid>', methods=['GET'])
+@token_required
 def get_one_sample(uuid):
     """ Returns dict of sample or 'No matches' """
     response = mongo_db['samples'].find_one({'uuid': uuid}, {'_id':0})
@@ -72,6 +99,7 @@ def get_one_sample(uuid):
         return 'No matches'
 
 @app.route('/users', methods=['GET'])
+@token_required
 def get_users():
     """ Returns enumerated dict of all distinct usernames """
     response = {}
@@ -84,12 +112,16 @@ def get_uuid(username):
     """ Return dict with keys username and uuid or 'No matches' """
     response = mongo_db['users'].find_one({'username': username}, {'_id':0})
     if response:
+        token = jwt.encode({'user' : username, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+    
+        response["token"] = token.decode('UTF-8')
         return response
     else:
         return 'No matches'
     return
 
 @app.route('/anomalies/<uuid>')
+@token_required
 def get_anomalies(uuid):
     """
     Returns single document containing matching uuid and list of anomalies with
@@ -113,6 +145,7 @@ def get_anomalies(uuid):
         return 'No matches'
 
 @app.route('/sunburst-data/<uuid>')
+@token_required
 def get_sunburst_data(uuid):
     """
     Returns a single document of sunburst content for a given uuid. If query
