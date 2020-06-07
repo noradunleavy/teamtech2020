@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import Paper from '@material-ui/core/Paper';
 import { AutoSizer, Column, Table } from 'react-virtualized';
+import './Anomalies.scss';
 
 const styles = (theme) => ({
   flexContainer: {
@@ -18,18 +19,22 @@ const styles = (theme) => ({
     '& .ReactVirtualized__Table__headerRow': {
       flip: false,
       paddingRight: theme.direction === 'rtl' ? '0 !important' : undefined,
+      margin: 'auto'
     },
   },
   tableRow: {
     cursor: 'pointer',
+    margin: 'auto'
   },
   tableRowHover: {
     '&:hover': {
       backgroundColor: theme.palette.grey[200],
+      margin: 'auto'
     },
   },
   tableCell: {
     flex: 1,
+    margin: 'auto'
   },
   noClick: {
     cursor: 'initial',
@@ -81,7 +86,7 @@ class MuiVirtualizedTable extends React.PureComponent {
         component="div"
         className={clsx(classes.tableCell, classes.flexContainer, classes.noClick)}
         variant="head"
-        style={{ height: headerHeight }}
+        style={{ height: headerHeight}}
         align={columns[columnIndex].numeric || false ? 'right' : 'left'}
       >
         <span>{label}</span>
@@ -92,6 +97,7 @@ class MuiVirtualizedTable extends React.PureComponent {
   render() {
     const { classes, columns, rowHeight, headerHeight, ...tableProps } = this.props;
     return (
+  
       <div className={classes.chartContainer}>
         <AutoSizer>
           {({ height, width }) => (
@@ -128,6 +134,7 @@ class MuiVirtualizedTable extends React.PureComponent {
           )}
         </AutoSizer>
       </div>
+    
     );
   }
 }
@@ -161,7 +168,6 @@ export default function ReactVirtualizedTable(props) {
     });
   }
   return (
-    <Paper style={{ height: 400, width: '60%', margin: 'auto', marginTop: 30, fontFamily: 'Roboto', backgroundColor: '#EEF4FF'}}>
       <VirtualizedTable
         rowCount={rows.length}
         rowGetter={({ index }) => rows[index]}
@@ -183,6 +189,6 @@ export default function ReactVirtualizedTable(props) {
           },
         ]}
       />
-    </Paper>
+    
   );
 }
