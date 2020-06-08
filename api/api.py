@@ -9,17 +9,15 @@ Author(s):  Samantha Walter <sjw2@illinois.edu>
 """
 
 import datetime
+from functools import wraps
 from os import getenv
 from time import time
 
+import jwt
 from dotenv import load_dotenv
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request
 from flask_cors import CORS
 from pymongo import MongoClient
-import jwt
-import functools
-from functools import wraps
-
 
 # Get MongoDB credentials
 load_dotenv()
@@ -41,23 +39,56 @@ app.config['SECRET_KEY'] = 'thisisthesecretkey'
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = request.args.get('token') #http://127.0.0.1:5000/route?token=
-
-        if not token:
-            return jsonify({'message' : 'Token is missing!'}), 403
-
-        try: 
-            data = jwt.decode(token, app.config['SECRET_KEY'])
-        except:
-            return jsonify({'message' : 'Token is invalid!'}), 403
-        return f(*args, **kwargs)
-    
+        auth_header = request.headers.get('Authorization')
+        if auth_header:
+            auth_token = auth_header.split(' ')[1]
+            if auth_token:
+                try:
+                    jwt.decode(auth_token, app.config['SECRET_KEY'])
+                    return f(*args, **kwargs)
+                except jwt.ExpiredSignatureError:
+                    return forbidden(403, 'Signature expired. Please authenticate again.')
+                except jwt.InvalidTokenError:
+                    return forbidden(403, 'Invalid token. Please authenticate again.')
+        return forbidden(403, 'Please provide a valid authentication token.')
     return decorated
 
+def generate_auth_token(username):
+    """ Generates authentication token """
+    try:
+        payload = {
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30),
+            'iat': datetime.datetime.utcnow(),
+            'user': username
+        }
+        return jwt.encode(
+            payload,
+            app.config['SECRET_KEY'],
+            algorithm='HS256'
+        )
+    except Exception as e:
+        return e
+
+@app.errorhandler(400)
+def bad_request(status_code=400, message=''):
+    return '<h1>400 Bad Request</h1><p>'+message+'</p>', 400
+
+@app.errorhandler(403)
+def forbidden(status_code, message='You do not have permission to access this resource.'):
+    return '<h1>403 Forbidden</h1><p>'+message+'</p>', 403
 
 @app.route('/', methods=['GET'])
-def hello_world():
-    return 'Hello, World!'
+def home():
+    return '''
+<html>
+    <head>
+        <title>SWE Illinois Team Tech API</title>
+    </head>
+    <body>
+        <h1>Hello, World!</h1>
+        <p>Welcome to SWE Illinois Team Tech's API</p>
+    </body>
+</html>'''
 
 @app.route('/categories', methods=['GET'])
 @token_required
@@ -112,8 +143,7 @@ def get_uuid(username):
     """ Return dict with keys username and uuid or 'No matches' """
     response = mongo_db['users'].find_one({'username': username}, {'_id':0})
     if response:
-        token = jwt.encode({'user' : username, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
-    
+        token = generate_auth_token(username)
         response["token"] = token.decode('UTF-8')
         return response
     else:
