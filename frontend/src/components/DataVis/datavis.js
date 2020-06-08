@@ -178,7 +178,17 @@ export default class DataVisualization extends Component {
     return (
       <div className="data-vis-page">
         <br/>
-
+        <div className = "uuid-prompt">
+          <h4> How to use this application to understand your phone usage:</h4>
+          <p> 1. Enter your username. </p>
+          <p> 2. To see your individual app usage in the data visualization, click "View App Usage". The innermost ring breaks down your usage for each category (i.e. Productivity or Personalization). 
+                  If you click on a subsection of the inner ring, the visualization will zoom into the usage for the apps that fall under that category. 
+                  The category entitled "UNCATEGORIZED" is for applications that do not fall under the defined categories. This includes applications that run in the background of your phone. </p>
+          <p> 3. To see any abnormal behavior in your cell usage, click "View Anomalies". An upward arrow indicates that you spent an abnormally large amount of time in that category during the specified period of time. 
+                  A downward arrow indicates that you spent an abnormally low amount of time in that category during the specified period of time.
+          </p>
+        </div>
+        <br/>
         <div className="username-wrapper">
           <div className="form-group">
             <span className = "uuid-prompt">Username:</span>
