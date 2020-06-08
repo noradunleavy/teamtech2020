@@ -86,10 +86,10 @@ export default class DataVisualization extends Component {
     let new_sunburst_data = await this.getSunburstData(this.state.startTimestamp, this.state.endTimestamp, this.state.uuid, this.state.token);
 
     this.setState((prevState) => ({
-      showSunburst: true,
+      showSunburst: !prevState.showSunburst,
       sunburstData: new_sunburst_data !== "No matches" ? new_sunburst_data : prevState.defaultSunburstData,
       showErrorModal: new_sunburst_data === "No matches" ? true : false,
-      errorText: new_sunburst_data === "No matches" ? "No matches found. Showing all entries." : "",
+      errorText: new_sunburst_data === "No matches" ? "No matches found in this range. Showing all entries." : "",
     }));
   }
 
@@ -106,10 +106,10 @@ export default class DataVisualization extends Component {
     let new_anomaly_data = await this.getAnomalyData(this.state.startTimestamp, this.state.endTimestamp, this.state.uuid, this.state.token);
 
     this.setState({
-      showAnomalies: true, 
+      showAnomalies: !this.state.showAnomalies, 
       anomalyData: new_anomaly_data === "No matches" ? this.state.defaultAnomalyData : new_anomaly_data,
       showErrorModal: new_anomaly_data === "No matches" ? true: false,
-      errorText: new_anomaly_data === "No matches" ? "No anomalies found. Showing all entries." : "",
+      errorText: new_anomaly_data === "No matches" ? "No anomalies found in this range. Showing all entries." : "",
     }, () => {
       setTimeout(() => {
         this.tableRef.current.scrollIntoView({behavior:"smooth"})
@@ -195,10 +195,10 @@ export default class DataVisualization extends Component {
             clearIcon = {null}
           />
           <Button className="view_button" justify="center" onClick={this.toggleSunburst.bind(this)}>
-            View App Usage
+            {this.state.showSunburst ? "Hide App Usage" : "View App Usage"}
           </Button>
           <Button className="view_button" justify="center" onClick = {this.toggleAnomalies.bind(this)}>
-            View Anomalies
+            {this.state.showAnomalies ? "Hide Anomalies" : "View Anomalies"}
           </Button>
         </div>}
 
