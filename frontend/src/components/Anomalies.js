@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
-import Paper from '@material-ui/core/Paper';
 import { AutoSizer, Column, Table } from 'react-virtualized';
 import './Anomalies.scss';
 
@@ -40,7 +39,7 @@ const styles = (theme) => ({
     cursor: 'initial',
   },
   chartContainer: {
-    width: 800,
+    width: 600,
     height: 400,
     margin: 'auto'
   }
@@ -184,7 +183,7 @@ export default function ReactVirtualizedTable(props) {
             dataKey: 'Category',
           },
           {
-            width: 269,
+            width: 120,
             label: 'Type',
             dataKey: 'Type',
           },
