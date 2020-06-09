@@ -38,46 +38,41 @@ class API {
 
         const resourceURL = `${this.url}`
 
+        endpoints.uuid = function ({username}) {
+            const urll = `${resourceURL}/users/${username}`;
+            return axios.get(urll)
+        }
 
-        endpoints.getAllSamples = ({token}) => axios.get(`${resourceURL}/samples?token=${token}`)
-
-        endpoints.getOneUser = ({ uuid }, {token}) =>  axios.get(`${resourceURL}/samples/${uuid}?token=${token}`)
-
-        endpoints.getOneProcess = ({ processName }, {token}) =>  axios.get(`${resourceURL}/categories/${processName}?token=${token}`)
-
-        endpoints.sunburstData = function ({ uuid }, { start_timestamp }, { end_timestamp }, {token}) {
-            var urll = `${resourceURL}/sunburst-data/${uuid}?token=${token}`;
-
+        endpoints.sunburstData = function ({uuid}, {start_timestamp}, {end_timestamp}, {token}) {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            var urll = `${resourceURL}/sunburst-data/${uuid}?`;
             if (start_timestamp !== undefined) {
                 urll = urll + `&start=${start_timestamp}`
             }
             if (end_timestamp !== undefined) {
                 urll = urll + `&end=${end_timestamp}`
             }
-
-            const response = axios.get(urll)
-            return response
+            return axios.get(urll, config)
         }
 
-        endpoints.anomalyData = function ({ uuid }, { start_timestamp }, { end_timestamp }, {token}) {
+        endpoints.anomalyData = function ({uuid}, {start_timestamp}, {end_timestamp}, {token}) {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
             var urll = `${resourceURL}/anomalies/${uuid}?token=${token}`;
-
             if (start_timestamp !== undefined) {
                 urll = urll + `&start=${start_timestamp}`
             }
             if (end_timestamp !== undefined) {
                 urll = urll + `&end=${end_timestamp}`
             }
-
-            const response = axios.get(urll)
-            return response
-        }
-
-        endpoints.username = function ({ username }) {
-            var urll = `${resourceURL}/users/${username}?`;
-
-            const response = axios.get(urll)
-            return response
+            return axios.get(urll, config)
         }
 
         return endpoints

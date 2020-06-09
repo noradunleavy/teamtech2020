@@ -9,6 +9,7 @@ import ErrorModal from '../error';
 import API from '../../api';
 
 const flaskApiUrl = "https://teamtech2020.herokuapp.com";
+// const flaskApiUrl = "http://127.0.0.1:5000";
 
 const styles = {
   container: {
@@ -51,17 +52,17 @@ export default class DataVisualization extends Component {
   getSunburstData = async(start, end, uuid, token) => {
     let data = null
     const myAPI = new API({url: flaskApiUrl})
-    myAPI.createEntity({ name: 'get'})
+    myAPI.createEntity({name: 'get'})
     await myAPI.endpoints.get.sunburstData({uuid: uuid}, {start_timestamp: start}, {end_timestamp: end}, {token: token})
       .then(response => data = response.data);
-    
+
     return JSON.parse(JSON.stringify(data));
   }
 
   getAnomalyData = async(start, end, uuid, token) => {
     let anomalyData = null
     const myAPI = new API({url: flaskApiUrl})
-    myAPI.createEntity({ name: 'get'})
+    myAPI.createEntity({name: 'get'})
     await myAPI.endpoints.get.anomalyData({uuid: uuid}, {start_timestamp: start}, {end_timestamp: end}, {token: token})
       .then(response => anomalyData = response.data);
     return JSON.parse(JSON.stringify(anomalyData));
@@ -95,18 +96,18 @@ export default class DataVisualization extends Component {
 
   displaySunburst = () => <Sunburst
     data={this.state.sunburstData}
-    width="800" 
-    height="900"           
+    width="800"
+    height="900"
     count_member="size"
     labelFunc={(node)=>node.data.name}
     _debug={false}
-  />  
+  />
 
   async toggleAnomalies() {
     let new_anomaly_data = await this.getAnomalyData(this.state.startTimestamp, this.state.endTimestamp, this.state.uuid, this.state.token);
 
     this.setState({
-      showAnomalies: !this.state.showAnomalies, 
+      showAnomalies: !this.state.showAnomalies,
       anomalyData: new_anomaly_data === "No matches" ? this.state.defaultAnomalyData : new_anomaly_data,
       showErrorModal: new_anomaly_data === "No matches" ? true: false,
       errorText: new_anomaly_data === "No matches" ? "No anomalies found in this range. Showing all entries." : "",
@@ -114,9 +115,9 @@ export default class DataVisualization extends Component {
       setTimeout(() => {
         this.tableRef.current.scrollIntoView({behavior:"smooth"})
       }, 100);
-    });     
+    });
   }
-  
+
   displayAnomalies() {
     return (
       <div ref={this.tableRef} style={this.state.showAnomalies ? {} : styles.noTable}>
@@ -137,15 +138,15 @@ export default class DataVisualization extends Component {
     // GET corresponding uuid from inputted username
     let result = null
     const myAPI = new API({url: flaskApiUrl})
-    myAPI.createEntity({ name: 'get'})
-    await myAPI.endpoints.get.username({username: this.state.usernameInput})
+    myAPI.createEntity({name: 'get'})
+    await myAPI.endpoints.get.uuid({username: this.state.usernameInput})
       .then(response => result = response.data);
     let token = result.token
 
     let defaultSunburstData = null;
     let defaultAnomalyData = null;
     if (result !== "No matches") {
-      // GET default sunburst data 
+      // GET default sunburst data
       defaultSunburstData = await this.getSunburstData(undefined, undefined, result["uuid"], token);
       // GET default anomaly data
       defaultAnomalyData = await this.getAnomalyData(undefined, undefined, result["uuid"], token);
@@ -181,10 +182,10 @@ export default class DataVisualization extends Component {
         <div className = "uuid-prompt">
           <h4> How to use this application to understand your phone usage:</h4>
           <p> 1. Enter your username. </p>
-          <p> 2. To see your individual app usage in the data visualization, click "View App Usage". The innermost ring breaks down your usage for each category (i.e. Productivity or Personalization). 
-                  If you click on a subsection of the inner ring, the visualization will zoom into the usage for the apps that fall under that category. 
+          <p> 2. To see your individual app usage in the data visualization, click "View App Usage". The innermost ring breaks down your usage for each category (i.e. Productivity or Personalization).
+                  If you click on a subsection of the inner ring, the visualization will zoom into the usage for the apps that fall under that category.
                   The category entitled "UNCATEGORIZED" is for applications that do not fall under the defined categories. This includes applications that run in the background of your phone. </p>
-          <p> 3. To see any abnormal behavior in your cell usage, click "View Anomalies". An upward arrow indicates that you spent an abnormally large amount of time in that category during the specified period of time. 
+          <p> 3. To see any abnormal behavior in your cell usage, click "View Anomalies". An upward arrow indicates that you spent an abnormally large amount of time in that category during the specified period of time.
                   A downward arrow indicates that you spent an abnormally low amount of time in that category during the specified period of time.
           </p>
         </div>
