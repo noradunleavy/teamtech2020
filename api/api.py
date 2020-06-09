@@ -34,7 +34,10 @@ mongo_db = MongoClient(CONNECTION_STRING)['carat']
 app = Flask(__name__)
 CORS(app)
 
-app.config['SECRET_KEY'] = 'thisisthesecretkey'
+app.config['SECRET_KEY'] = getenv("API_SECRET")
+if not app.config['SECRET_KEY']:
+    raise SystemExit(f"ERROR: Unable to retrieve API secret")
+
 
 def token_required(f):
     @wraps(f)
