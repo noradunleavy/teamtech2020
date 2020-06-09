@@ -31,67 +31,101 @@ export default class DataVisualization extends Component {
       sunburstData: null,
       defaultSunburstData: null,
       showSunburst: false,
-      showAnomalies: false,
       anomalyData: null,
       defaultAnomalyData: null,
-      usernameInput: "",
+      showAnomalies: false,
+      username: "",
       uuid: null,
       showErrorModal: false,
       errorText: "",
-      token: '',
+      token: null
     };
     this.tableRef = React.createRef();
+    this.myAPI = new API({url: flaskApiUrl});
+    this.myAPI.createEntity({name: 'get'});
+  }
+
+  handleInputChange = (input) => {
+    this.setState({
+      username: input,
+    });
   }
 
   handleModalClose = () => {
     this.setState({
       showErrorModal: false,
-    })
+    });
   }
 
-  getSunburstData = async(start, end, uuid, token) => {
-    let data = null
-    const myAPI = new API({url: flaskApiUrl})
-    myAPI.createEntity({name: 'get'})
-    await myAPI.endpoints.get.sunburstData({uuid: uuid}, {start_timestamp: start}, {end_timestamp: end}, {token: token})
-      .then(response => data = response.data);
-
-    return JSON.parse(JSON.stringify(data));
-  }
-
-  getAnomalyData = async(start, end, uuid, token) => {
-    let anomalyData = null
-    const myAPI = new API({url: flaskApiUrl})
-    myAPI.createEntity({name: 'get'})
-    await myAPI.endpoints.get.anomalyData({uuid: uuid}, {start_timestamp: start}, {end_timestamp: end}, {token: token})
-      .then(response => anomalyData = response.data);
-    return JSON.parse(JSON.stringify(anomalyData));
+  showModalAuthErr = () => {
+    this.setState({
+      showErrorModal: true,
+      errorText: "Session Expired. Please enter username.",
+      showSunburst: false,
+      showAnomalies: false,
+      defaultSunburstData: null,
+      defaultAnomalyData: null
+    });
   }
 
   onChangeDateTime = async(selectedDate) => {
     // Convert date into start and end unix timestamps
-    let start = Math.floor(selectedDate[0].getTime() / 1000)
-    let end = Math.floor(selectedDate[1].getTime() / 1000)
+    let start = Math.floor(selectedDate[0].getTime() / 1000);
+    let end = Math.floor(selectedDate[1].getTime() / 1000);
 
     this.setState({
       date: selectedDate,
       showSunburst: false,
       showAnomalies: false,
       startTimestamp: start,
-      endTimestamp: end,
-    })
+      endTimestamp: end
+    });
+  }
+
+  getSunburstData = async(uuid, start, end, token) => {
+    let resp = null;
+    try {
+      resp = await this.myAPI.endpoints.get.sunburstData({uuid: uuid}, {start_timestamp: start}, {end_timestamp: end}, {token: token});
+      return resp.data;
+    } catch (error) {
+      if (error.response.status === 403) {
+        this.showModalAuthErr();
+      }
+    }
+  }
+
+  getAnomalyData = async(uuid, start, end, token) => {
+    let resp = null;
+    try {
+      resp = await this.myAPI.endpoints.get.anomalyData({uuid: uuid}, {start_timestamp: start}, {end_timestamp: end}, {token: token});
+      return resp.data;
+    } catch (error) {
+      if (error.response.status === 403) {
+        this.showModalAuthErr();
+      }
+    }
   }
 
   async toggleSunburst() {
-    // GET the new sunburst data
-    let new_sunburst_data = await this.getSunburstData(this.state.startTimestamp, this.state.endTimestamp, this.state.uuid, this.state.token);
-
-    this.setState((prevState) => ({
-      showSunburst: !prevState.showSunburst,
-      sunburstData: new_sunburst_data !== "No matches" ? new_sunburst_data : prevState.defaultSunburstData,
-      showErrorModal: new_sunburst_data === "No matches" ? true : false,
-      errorText: new_sunburst_data === "No matches" ? "No matches found in this range. Showing all entries." : "",
-    }));
+    let newSunburstData = null;
+    if (!this.state.showSunburst) {
+      newSunburstData = await this.getSunburstData(this.state.uuid, this.state.startTimestamp, this.state.endTimestamp, this.state.token)
+      if (newSunburstData === "No matches" && this.state.defaultSunburstData) {
+        this.setState({
+          sunburstData: this.state.defaultSunburstData,
+          showSunburst: true,
+          showErrorModal: true,
+          errorText: "No data found in this time range. Showing all-time data."
+        });
+      } else if (newSunburstData) {
+        this.setState({
+          sunburstData: newSunburstData,
+          showSunburst: true
+        });
+      }
+    } else {
+      this.setState({ showSunburst: false })
+    }
   }
 
   displaySunburst = () => <Sunburst
@@ -104,18 +138,29 @@ export default class DataVisualization extends Component {
   />
 
   async toggleAnomalies() {
-    let new_anomaly_data = await this.getAnomalyData(this.state.startTimestamp, this.state.endTimestamp, this.state.uuid, this.state.token);
-
-    this.setState({
-      showAnomalies: !this.state.showAnomalies,
-      anomalyData: new_anomaly_data === "No matches" ? this.state.defaultAnomalyData : new_anomaly_data,
-      showErrorModal: new_anomaly_data === "No matches" ? true: false,
-      errorText: new_anomaly_data === "No matches" ? "No anomalies found in this range. Showing all entries." : "",
-    }, () => {
-      setTimeout(() => {
-        this.tableRef.current.scrollIntoView({behavior:"smooth"})
-      }, 100);
-    });
+    let newAnomalyData = null;
+    if (!this.state.showAnomalies) {
+      newAnomalyData = await this.getAnomalyData(this.state.uuid, this.state.startTimestamp, this.state.endTimestamp, this.state.token);
+      if (newAnomalyData === "No matches" && this.state.defaultAnomalyData) {
+        this.setState({
+          anomalyData: this.state.defaultAnomalyData,
+          showAnomalies: true,
+          showErrorModal: true,
+          errorText: "No data found in this time range. Showing all-time data."
+        });
+      } else if (newAnomalyData) {
+        this.setState({
+          anomalyData: newAnomalyData,
+          showAnomalies: true
+        }, () => {
+          setTimeout(() => {
+            this.tableRef.current.scrollIntoView({behavior:"smooth"})
+          }, 100);
+        });
+      }
+    } else {
+      this.setState({ showAnomalies: false })
+    }
   }
 
   displayAnomalies() {
@@ -128,50 +173,40 @@ export default class DataVisualization extends Component {
     )
   }
 
-  handleInputChange = (input) => {
-    this.setState({
-      usernameInput: input,
-    })
-  }
-
-  async getUUID() {
-    // GET corresponding uuid from inputted username
-    let result = null
-    const myAPI = new API({url: flaskApiUrl})
-    myAPI.createEntity({name: 'get'})
-    await myAPI.endpoints.get.uuid({username: this.state.usernameInput})
-      .then(response => result = response.data);
-    let token = result.token
-
-    let defaultSunburstData = null;
-    let defaultAnomalyData = null;
-    if (result !== "No matches") {
-      // GET default sunburst data
-      defaultSunburstData = await this.getSunburstData(undefined, undefined, result["uuid"], token);
-      // GET default anomaly data
-      defaultAnomalyData = await this.getAnomalyData(undefined, undefined, result["uuid"], token);
+  async getUuid() {
+    // Catch if no username has been entered
+    if (this.state.username === "") {
+      return;
     }
 
-    // Check if username was found. If not, display error modal.
-    if(result !== "No matches") {
+    // Get uuid
+    let data = null;
+    await this.myAPI.endpoints.get.uuid({username: this.state.username})
+      .then(response => data = response.data);
+
+    // Get default data
+    let defaultSunburstData = null;
+    let defaultAnomalyData = null;
+    if (data !== "No matches") {
+      defaultSunburstData = await this.getSunburstData(data["uuid"], undefined, undefined, data.token);
+      defaultAnomalyData = await this.getAnomalyData(data["uuid"], undefined, undefined, data.token);
+
+      // Update state
       this.setState({
-        uuid: result["uuid"],
-        showSunburst: false,
-        showAnomalies: false,
+        uuid: data["uuid"],
         defaultSunburstData,
         defaultAnomalyData,
-        token,
-      })
+        token: data.token
+      });
     } else {
       this.setState({
         showErrorModal: true,
         errorText: "No user found.",
-        showSunburst: false,
-        showAnomalies: false,
-        defaultSunburstData,
-        defaultAnomalyData,
+        defaultSunburstData: null,
+        defaultAnomalyData: null,
         uuid: null,
-      })
+        token: null
+      });
     }
   }
 
@@ -192,10 +227,10 @@ export default class DataVisualization extends Component {
         <br/>
         <div className="username-wrapper">
           <div className="form-group">
-            <span className = "uuid-prompt">Username:</span>
-            <input class="form-field" type="text" placeholder="Please input your username" onChange={e => this.handleInputChange(e.target.value)}/>
+            <span className="uuid-prompt">Username:</span>
+            <input className="form-field" type="text" placeholder="Please input your username" onChange={e => this.handleInputChange(e.target.value)}/>
           </div>
-          <Button className="view_button" onClick={this.getUUID.bind(this)}>Submit</Button>
+          <Button className="view_button" onClick={this.getUuid.bind(this)}>Submit</Button>
         </div>
 
         {this.state.uuid === null ? null : <div className="datavis-options-container">
