@@ -7,10 +7,10 @@
 
 .username-wrapper {
     display: flex;
-    flex-direction: row;
-    width: 30%;
-    padding: 0;
-    margin-left: 1%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
 .sunburst-wrapper {
@@ -20,7 +20,11 @@
 }
 
 .datavis-options-container {
-    margin: 1%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
 }
 
 .react-datetimerange-picker__wrapper{
@@ -50,6 +54,10 @@
         background-color: #678EFE !important;
         color: white !important;
     }
+}
+
+.submit_button {
+    width: 25rem;
 }
 
 /* Username input styling */
@@ -102,7 +110,7 @@
 .form-group {
     position: relative;
     display: flex;
-    width: 100%;
+    width: 25rem;
     margin-right: 10px;
     & > span,
     .form-field {
@@ -130,6 +138,7 @@
         margin-bottom: 0;
     }
     & > span {
+        width: 100px;
         text-align: center;
         padding: 10px 30 px;
         line-height: 25px;

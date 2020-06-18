@@ -1,13 +1,20 @@
 
-.ReactVirtualized__Table__Grid{
-background-color: white;
+.ReactVirtualized__Table__Grid {
+    background-color: white;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
 
-.ReactVirtualized__Table__headerColumn{
+.ReactVirtualized__Table__headerColumn {
     background-color:rgb(222, 229, 245);
 }
 
-.ReactVirtualized_Table__headerRow{
+.ReactVirtualized_Table__headerRow {
     background-color: rgb(222, 229, 245);
     padding-right: 0 !important;
+}
+
+.MuiVirtualizedTable-tableRow-3 {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
 }

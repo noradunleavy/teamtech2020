@@ -35,6 +35,7 @@ export default class DataVisualization extends Component {
       defaultAnomalyData: null,
       showAnomalies: false,
       username: "",
+      password: "",
       uuid: null,
       showErrorModal: false,
       errorText: "",
@@ -45,9 +46,15 @@ export default class DataVisualization extends Component {
     this.myAPI.createEntity({name: 'get'});
   }
 
-  handleInputChange = (input) => {
+  handleUsernameChange = (input) => {
     this.setState({
       username: input,
+    });
+  }
+
+  handlePasswordChange = (input) => {
+    this.setState({
+      password: input,
     });
   }
 
@@ -60,7 +67,7 @@ export default class DataVisualization extends Component {
   showModalAuthErr = () => {
     this.setState({
       showErrorModal: true,
-      errorText: "Session Expired. Please enter username.",
+      errorText: "Session Expired. Please enter username and password.",
       showSunburst: false,
       showAnomalies: false,
       defaultSunburstData: null,
@@ -225,13 +232,19 @@ export default class DataVisualization extends Component {
           </p>
         </div>
         <br/>
-        <div className="username-wrapper">
-          <div className="form-group">
-            <span className="uuid-prompt">Username:</span>
-            <input className="form-field" type="text" placeholder="Please input your username" onChange={e => this.handleInputChange(e.target.value)}/>
-          </div>
-          <Button className="view_button" onClick={this.getUuid.bind(this)}>Submit</Button>
-        </div>
+
+        {this.state.uuid === null &&
+          <div className="username-wrapper">
+            <div className="form-group">
+              <span className="uuid-prompt">Username:</span>
+              <input className="form-field" type="text" placeholder="Please enter your username" onChange={e => this.handleUsernameChange(e.target.value)}/>
+            </div>
+            <div className="form-group">
+              <span className="uuid-prompt">Password:</span>
+              <input className="form-field" type="password" placeholder="Please enter your password" onChange={e => this.handlePasswordChange(e.target.value)}/>
+            </div>
+            <Button className="view_button submit_button" onClick={this.getUuid.bind(this)}>Submit</Button>
+          </div>}
 
         {this.state.uuid === null ? null : <div className="datavis-options-container">
           <DateTimeRangePicker
